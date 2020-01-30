@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Edge Canary x64 Launcher", "Edge Canary x64 Launcher.csproj", "{989AC71B-8082-4A6B-BA4A-4D7AAFD83FA3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{989AC71B-8082-4A6B-BA4A-4D7AAFD83FA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{989AC71B-8082-4A6B-BA4A-4D7AAFD83FA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{989AC71B-8082-4A6B-BA4A-4D7AAFD83FA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{989AC71B-8082-4A6B-BA4A-4D7AAFD83FA3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {244BAEF9-A7A0-4236-8F25-8A4DF7FCB2AE}
+	EndGlobalSection
+EndGlobal
