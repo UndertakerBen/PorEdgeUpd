@@ -89,9 +89,16 @@ namespace Edge_Updater
                     checkBox1.Checked = true;
                     CheckButton();
                 }
-                else if (File.Exists(@"Edge\msedge.exe"))
+                else if (!checkBox1.Checked)
                 {
-                    CheckButton2();
+                    checkBox2.Enabled = false;
+                    checkBox3.Enabled = false;
+                    button9.Enabled = false;
+                    button9.BackColor = Color.FromArgb(244, 244, 244);
+                    if (File.Exists(@"Edge\msedge.exe"))
+                    {
+                        CheckButton2();
+                    }
                 }
             }
             if (IntPtr.Size != 8)
@@ -102,9 +109,15 @@ namespace Edge_Updater
                     checkBox2.Enabled = false;
                     CheckButton();
                 }
-                else if (File.Exists(@"Edge\msedge.exe"))
+                else if (!checkBox1.Checked)
                 {
-                    CheckButton2();
+                    checkBox2.Enabled = false;
+                    button9.Enabled = false;
+                    button9.BackColor = Color.FromArgb(244, 244, 244);
+                    if (File.Exists(@"Edge\msedge.exe"))
+                    {
+                        CheckButton2();
+                    }
                 }
             }
         }
