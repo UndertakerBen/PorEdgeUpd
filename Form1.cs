@@ -577,7 +577,7 @@ namespace Edge_Updater
         {
             if (File.Exists(@instOrdner[b] + "\\updates\\Version.log"))
             {
-                if (File.ReadAllText(instOrdner[a] + "\\updates\\Version.log").Split(new char[] { '|' })[0] == buildversion[a])
+                if (File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' })[0] == buildversion[a])
                 {
                     if (checkBox4.Checked)
                     {
