@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -7,6 +7,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Edge_Updater
@@ -120,134 +121,180 @@ namespace Edge_Updater
                     }
                 }
             }
+            CheckUpdate();
         }
-        private void Button1_Click(object sender, EventArgs e)
+        private async void Button1_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(0, 0, 0, 5, 18, 17, 1);
+                await NewMethod(0, 0, 0, 1);
             }
             else if (!checkBox1.Checked)
             {
-                NewMethod1(0, 0, 1);
+                await NewMethod1(0, 0, 1);
             }
         }
-        private void Button2_Click(object sender, EventArgs e)
+        private async void Button2_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(1, 1, 0, 6, 20, 19, 2);
+                await NewMethod(1, 1, 0, 2);
             }
             if (!checkBox1.Checked)
             {
-                NewMethod1(1, 0, 2);
+                await NewMethod1(1, 0, 2);
             }
         }
-        private void Button3_Click(object sender, EventArgs e)
+        private async void Button3_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(2, 2, 0, 7, 22, 21, 3);
+                await NewMethod(2, 2, 0, 3);
             }
             else if (!checkBox1.Checked)
             {
-                NewMethod1(2, 0, 3);
+                await NewMethod1(2, 0, 3);
             }
         }
-        private void Button4_Click(object sender, EventArgs e)
+        private async void Button4_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(3, 3, 0, 8, 24, 23, 4);
+                await NewMethod(3, 3, 0, 4);
             }
             else if (!checkBox1.Checked)
             {
-                NewMethod1(3, 0, 4);
+                await NewMethod1(3, 0, 4);
             }
         }
-        private void Button5_Click(object sender, EventArgs e)
+        private async void Button5_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(0, 4, 1, 4, 15, 16, 5);
+                await NewMethod(0, 4, 1, 5);
             }
             else if (!checkBox1.Checked)
             {
-                NewMethod1(0, 1, 5);
+                await NewMethod1(0, 1, 5);
             }
         }
-        private void Button6_Click(object sender, EventArgs e)
+        private async void Button6_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(1, 5, 1, 3, 13, 14, 6);
+                await NewMethod(1, 5, 1, 6);
             }
             else if (!checkBox1.Checked)
             {
-                NewMethod1(1, 1, 6);
+                await NewMethod1(1, 1, 6);
             }
         }
-        private void Button7_Click(object sender, EventArgs e)
+        private async void Button7_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(2, 6, 1, 1, 11, 12, 7);
+                await NewMethod(2, 6, 1,  7);
             }
             else if (!checkBox1.Checked)
             {
-                NewMethod1(2, 1, 7);
+                await NewMethod1(2, 1, 7);
             }
         }
-        private void Button8_Click(object sender, EventArgs e)
+        private async void Button8_Click(object sender, EventArgs e)
         {
             if (checkBox1.Checked)
             {
-                NewMethod(3, 7, 1, 2, 27, 28, 8);
+                await NewMethod(3, 7, 1, 8);
             }
             else if (!checkBox1.Checked)
             {
-                NewMethod1(3, 1, 8);
+                await NewMethod1(3, 1, 8);
             }
         }
-        private void Button9_Click(object sender, EventArgs e)
+        private async void Button9_Click(object sender, EventArgs e)
+        {
+            await Testing();
+        }
+        private async Task Testing()
         {
             if ((!Directory.Exists(@"Edge Canary x86")) && (!Directory.Exists(@"Edge Dev x86")) && (!Directory.Exists(@"Edge Beta x86")) && (!Directory.Exists(@"Edge Stable x86")))
             {
                 if (checkBox2.Checked)
                 {
-                    DownloadFile(0, 0, 0, 5, 18, 17, 1);
-                    DownloadFile(1, 1, 0, 6, 20, 19, 2);
-                    DownloadFile(2, 2, 0, 7, 22, 21, 3);
-                    DownloadFile(3, 3, 0, 8, 24, 23, 4);
+                    await DownloadFile(0, 0, 0, 1);
+                    await DownloadFile(1, 1, 0, 2);
+                    await DownloadFile(2, 2, 0, 3);
+                    await DownloadFile(3, 3, 0, 4);
                     checkBox2.Enabled = false;
                 }
             }
-            NewMethod2(0, 0, 0, 5, 18, 17, 1);
-            NewMethod2(1, 1, 0, 6, 20, 19, 2);
-            NewMethod2(2, 2, 0, 7, 22, 21, 3);
-            NewMethod2(3, 3, 0, 8, 24, 23, 4);
+            await NewMethod2(0, 0, 0, 1);
+            await NewMethod2(1, 1, 0, 2);
+            await NewMethod2(2, 2, 0, 3);
+            await NewMethod2(3, 3, 0, 4);
             if (IntPtr.Size == 8)
             {
                 if ((!Directory.Exists(@"Edge Canary x64")) && (!Directory.Exists(@"Edge Dev x64")) && (!Directory.Exists(@"Edge Beta x64")) && (!Directory.Exists(@"Edge Stable x64")))
                 {
                     if (checkBox3.Checked)
                     {
-                        DownloadFile(0, 4, 1, 4, 15, 16, 5);
-                        DownloadFile(1, 5, 1, 3, 13, 14, 6);
-                        DownloadFile(2, 6, 1, 1, 11, 12, 7);
-                        DownloadFile(3, 7, 1, 2, 27, 28, 8);
+                        await DownloadFile(0, 4, 1, 5);
+                        await DownloadFile(1, 5, 1, 6);
+                        await DownloadFile(2, 6, 1, 7);
+                        await DownloadFile(3, 7, 1, 8);
                         checkBox3.Enabled = false;
                     }
                 }
-                NewMethod2(0, 4, 1, 4, 15, 16, 5);
-                NewMethod2(1, 5, 1, 3, 13, 14, 6);
-                NewMethod2(2, 6, 1, 1, 11, 12, 7);
-                NewMethod2(3, 7, 1, 2, 27, 28, 8);
+                await NewMethod2(0, 4, 1, 5);
+                await NewMethod2(1, 5, 1, 6);
+                await NewMethod2(2, 6, 1, 7);
+                await NewMethod2(3, 7, 1, 8);
             }
         }
-        public void DownloadFile(int i, int f, int e, int a, int b, int c, int d)
+        public async Task DownloadFile(int a, int b, int c, int d)
         {
-            WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[i] + "-win-" + architektur[e] + "/versions/" + buildversion[i] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
+            GroupBox progressBox = new GroupBox
+            {
+                Location = new Point(10, 290),
+                Size = new Size(359, 90),
+                BackColor = Color.Lavender,
+            };
+            Label title = new Label
+            {
+                AutoSize = false,
+                Location = new Point(5, 10),
+                Size = new Size(349, 25),
+                Text = "Edge Chromium " + ring2[a] + " " + buildversion[a] + " " + architektur2[c],
+                TextAlign = ContentAlignment.BottomCenter
+            };
+            title.Font = new Font(title.Font.Name, 9.25F, FontStyle.Bold);
+            Label downloadLabel = new Label
+            {
+                AutoSize = false,
+                Location = new Point(8, 35),
+                Size = new Size(200, 25),
+                TextAlign = ContentAlignment.BottomLeft
+            };
+            Label percLabel = new Label
+            {
+                AutoSize = false,
+                Location = new Point(253, 35),
+                Size = new Size(100, 25),
+                TextAlign = ContentAlignment.BottomRight
+            };
+            ProgressBar progressBarneu = new ProgressBar
+            {
+                Location = new Point(8, 65),
+                Size = new Size(341, 7)
+            };
+            progressBox.Controls.Add(title);
+            progressBox.Controls.Add(downloadLabel);
+            progressBox.Controls.Add(percLabel);
+            progressBox.Controls.Add(progressBarneu);
+            Controls.Add(progressBox);
+            Size = new Size(396, 432);
+            List<Task> list = new List<Task>();
+            WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[a] + "-win-" + architektur[c] + "/versions/" + buildversion[a] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
             request.Method = "POST";
             string postData = "{}";
             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
@@ -259,17 +306,127 @@ namespace Edge_Updater
             using (dataStream = request.GetResponse().GetResponseStream())
             {
                 string responseFromServer = new StreamReader(dataStream).ReadToEnd();
-                string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("MicrosoftEdge_" + architektur[e] + "_" + buildversion[i] + ".exe")).Split(new char[] { '"' });
+                string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + ".exe")).Split(new char[] { '"' });
                 WebClient myWebClient = new WebClient();
                 Uri uri = new Uri(URL[4]);
 
                 using (webClient = new WebClient())
                 {
-                    webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
-                    webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(Completed);
+                    webClient.DownloadProgressChanged += (o, args) =>
+                    {
+                        Control[] buttons = Controls.Find("button" + d, true);
+                        if (buttons.Length > 0)
+                        {
+                            Button button = (Button)buttons[0];
+                            button.BackColor = Color.Orange;
+                        }
+                        progressBarneu.Value = args.ProgressPercentage;
+                        downloadLabel.Text = string.Format("{0} MB's / {1} MB's",
+                            (args.BytesReceived / 1024d / 1024d).ToString("0.00"),
+                            (args.TotalBytesToReceive / 1024d / 1024d).ToString("0.00"));
+                        percLabel.Text = args.ProgressPercentage.ToString() + "%";
+                    };
+                    webClient.DownloadFileCompleted += (o, args) =>
+                    {
+                        if (args.Error != null)
+                        {
+                            var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                            list.Add(task);
+                        }
+                        if (args.Cancelled == true)
+                        {
+                            MessageBox.Show("Download has been canceled.");
+                        }
+                        else
+                        {
+                            downloadLabel.Text = culture1.Name != "de-DE" ? "Unpacking" : "Entpacken";
+                            string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
+                            Process process = new Process();
+                            process.StartInfo.FileName = @"Bin\7zr.exe";
+                            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                            process.StartInfo.Arguments = arguments;
+                            process.Start();
+                            process.WaitForExit();
+                            process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[b] + " -y";
+                            process.Start();
+                            process.WaitForExit();
+                            if ((File.Exists(@"Update\" + entpDir[d] + "\\chrome-bin\\msedge.exe")) && (File.Exists(instOrdner[b] + "\\updates\\Version.log")))
+                            {
+                                string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe");
+                                if (checkBox1.Checked)
+                                {
+                                    if (testm.FileVersion != instVersion[0])
+                                    {
+                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                        {
+                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                        }
+                                        Thread.Sleep(2000);
+                                        NewMethod4(architektur2[c], d, testm, b);
+                                    }
+                                    else if ((testm.FileVersion == instVersion[0]) && (checkBox4.Checked))
+                                    {
+                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                        {
+                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                        }
+                                        Thread.Sleep(2000);
+                                        NewMethod4(architektur2[c], d, testm, b);
+                                    }
+                                }
+                                else if (!checkBox1.Checked)
+                                {
+                                    if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                    {
+                                        Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                    }
+                                    Thread.Sleep(2000);
+                                    NewMethod4(architektur2[c], d, testm, b);
+                                }
+                            }
+                            else
+                            {
+                                if (!Directory.Exists(instOrdner[b]))
+                                {
+                                    Directory.CreateDirectory(instOrdner[b]);
+                                }
+                                else if (Directory.Exists(instOrdner[b]))
+                                {
+                                    if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                    {
+                                        string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                        {
+                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                        }
+                                    }
+                                }
+                                NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe"), b);
+                            }
+                        }
+                        if (checkBox5.Checked)
+                        {
+                            if (!File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk"))
+                            {
+                                NewMethod5(a, b);
+                            }
+                        }
+                        else if (File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk") && (instOrdner[b] == "Edge"))
+                        {
+                            NewMethod5(a, b);
+                        }
+                        if (!File.Exists(@instOrdner[b] + " Launcher.exe"))
+                        {
+                            File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
+                        }
+                        File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                        downloadLabel.Text = culture1.Name != "de-DE" ? "Unpacked" : "Entpackt";
+                    };
                     try
                     {
-                        webClient.DownloadFileAsync(uri, "MicrosoftEdge_" + architektur[e] + "_" + buildversion[i] + "_" + ring[i] + ".exe", a + "|" + b + "|" + c + "|" + d + "|" + "MicrosoftEdge_" + architektur[e] + "_" + buildversion[i] + "_" + ring[i] + ".exe" + "|" + architektur2[e] + "|" + i + "|" + f);
+                        var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                        list.Add(task);
                     }
                     catch (Exception ex)
                     {
@@ -277,130 +434,10 @@ namespace Edge_Updater
                     }
                 }
             }
-        }
-        private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            string[] i = e.UserState.ToString().Split(new char[] { '|' });
-            Control[] progressBars = Controls.Find("progressBar" + i[0], true);
-            Control[] buttons = Controls.Find("button" + i[3], true);
-            Control[] label1 = Controls.Find("label" + i[1], true);
-            Control[] label2 = Controls.Find("label" + i[2], true);
-            if (buttons.Length > 0)
-            {
-                Button button = (Button)buttons[0];
-                button.BackColor = Color.Orange;
-            }
-            if (progressBars.Length > 0)
-            {
-                ProgressBar progressBar = (ProgressBar)progressBars[0];
-                progressBar.Visible = true;
-                progressBar.Value = e.ProgressPercentage;
-            }
-            if (label1.Length > 0)
-            {
-                Label label = (Label)label1[0];
-                label.Visible = true;
-                label.Text = string.Format("{0} MB's / {1} MB's",
-                (e.BytesReceived / 1024d / 1024d).ToString("0.00"),
-                (e.TotalBytesToReceive / 1024d / 1024d).ToString("0.00"));
-            }
-            if (label2.Length > 0)
-            {
-                Label label3 = (Label)label2[0];
-                label3.Visible = true;
-                label3.Text = e.ProgressPercentage.ToString() + "%";
-            }
-        }
-        private void Completed(object sender, AsyncCompletedEventArgs e)
-        {
-            string[] i = e.UserState.ToString().Split(new char[] { '|' });
-            int b = int.Parse(i[1]);
-            int d = int.Parse(i[7]);
-            Control[] labels = Controls.Find("label" + b, true);
-            Label label = (Label)labels[0];
-            if (e.Cancelled == true)
-            {
-                MessageBox.Show("Download has been canceled.");
-            }
-            else
-            {
-                if (labels.Length > 0)
-                {
-                    label.Text = culture1.Name != "de-DE" ? "Unpacking" : "Entpacken";
-                    string arguments = " x " + i[4] + " -o" + @"Update\" + entpDir[d] + " -y";
-                    Process process = new Process();
-                    process.StartInfo.FileName = @"Bin\7zr.exe";
-                    process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                    process.StartInfo.Arguments = arguments;
-                    process.Start();
-                    process.WaitForExit();
-                    process.StartInfo.Arguments = " x " + @"Update\" + entpDir[d] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[d] + " -y";
-                    process.Start();
-                    process.WaitForExit();
-                    int a = int.Parse(i[3]);
-                    if ((File.Exists(@"Update\" + entpDir[d] + "\\chrome-bin\\msedge.exe")) && (File.Exists(instOrdner[d] + "\\updates\\Version.log")))
-                    {
-                        string[] instVersion = File.ReadAllText(instOrdner[d] + "\\updates\\Version.log").Split(new char[] { '|' });
-                        FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[d] + "\\chrome-bin\\msedge.exe");
-                        if (checkBox1.Checked)
-                        {
-                            if (testm.FileVersion != instVersion[0])
-                            {
-                                if (Directory.Exists(instOrdner[d] + "\\" + instVersion[0]))
-                                {
-                                    Directory.Delete(instOrdner[d] + "\\" + instVersion[0], true);
-                                }
-                                Thread.Sleep(2000);
-                                NewMethod4(i, a, testm, d);
-                            }
-                            else if ((testm.FileVersion == instVersion[0]) && (checkBox4.Checked))
-                            {
-                                if (Directory.Exists(instOrdner[d] + "\\" + instVersion[0]))
-                                {
-                                    Directory.Delete(instOrdner[d] + "\\" + instVersion[0], true);
-                                }
-                                Thread.Sleep(2000);
-                                NewMethod4(i, a, testm, d);
-                            }
-                        }
-                        else if (!checkBox1.Checked)
-                        {
-                            if (Directory.Exists(instOrdner[d] + "\\" + instVersion[0]))
-                            {
-                                Directory.Delete(instOrdner[d] + "\\" + instVersion[0], true);
-                            }
-                            Thread.Sleep(2000);
-                            NewMethod4(i, a, testm, d);
-                        }
-                    }
-                    else
-                    {
-                        if (!Directory.Exists(instOrdner[d]))
-                        {
-                            Directory.CreateDirectory(instOrdner[d]);
-                        }
-                        NewMethod4(i, a, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[d] + "\\chrome-bin\\msedge.exe"), d);
-                    }
-                }
-            }
-            int c = int.Parse(i[6]);
-            if (checkBox5.Checked)
-            {
-                if (!File.Exists(deskDir + "\\" + instOrdner[d] + ".lnk"))
-                {
-                    NewMethod5(c, d);
-                }
-            }
-            else if (File.Exists(deskDir + "\\" + instOrdner[d] + ".lnk") && (instOrdner[d] == "Edge"))
-            {
-                NewMethod5(c, d);
-            }
-            if (!File.Exists(@instOrdner[d] + " Launcher.exe"))
-            {
-                File.Copy(@"Bin\Launcher\" + instOrdner[d] + " Launcher.exe", @instOrdner[d] + " Launcher.exe");
-            }
-            File.Delete(i[4]);
-            label.Text = culture1.Name != "de-DE" ? "Unpacked" : "Entpackt";
+            await Task.WhenAll(list);
+            await Task.Delay(2000);
+            Size = new Size(396, 342);
+            Controls.Remove(progressBox);
         }
         public void CheckButton()
         {
@@ -573,7 +610,7 @@ namespace Edge_Updater
                 button9.BackColor = Color.FromArgb(244, 244, 244);
             }
         }
-        private void NewMethod(int a, int b, int c, int d, int e, int f, int g)
+        private async Task NewMethod(int a, int b, int c, int d)
         {
             if (File.Exists(@instOrdner[b] + "\\updates\\Version.log"))
             {
@@ -581,7 +618,7 @@ namespace Edge_Updater
                 {
                     if (checkBox4.Checked)
                     {
-                        DownloadFile(a, b, c, d, e, f, g);
+                        await DownloadFile(a, b, c, d);
                     }
                     else
                     {
@@ -590,15 +627,15 @@ namespace Edge_Updater
                 }
                 else
                 {
-                    DownloadFile(a, b, c, d, e, f, g);
+                    await DownloadFile(a, b, c, d);
                 }
             }
             else
             {
-                DownloadFile(a, b, c, d, e, f, g);
+                await DownloadFile(a, b, c, d);
             }
         }
-        private void NewMethod1(int a, int b, int c)
+        private async Task NewMethod1(int a, int b, int c)
         {
             if (File.Exists(@"Edge\updates\Version.log"))
             {
@@ -607,7 +644,7 @@ namespace Edge_Updater
                 {
                     if (checkBox4.Checked)
                     {
-                        DownloadFile(a, 8, b, 5, 18, 17, c);
+                        await DownloadFile(a, 8, b, c);
                     }
                     else
                     {
@@ -616,15 +653,15 @@ namespace Edge_Updater
                 }
                 else
                 {
-                    DownloadFile(a, 8, b, 5, 18, 17, c);
+                    await DownloadFile(a, 8, b, c);
                 }
             }
             else
             {
-                DownloadFile(a, 8, b, 5, 18, 17, c);
+                await DownloadFile(a, 8, b, c);
             }
         }
-        private void NewMethod2(int a, int b, int c, int d, int e, int f, int g)
+        private async Task NewMethod2(int a, int b, int c, int d)
         {
             if (Directory.Exists(instOrdner[b]))
             {
@@ -632,7 +669,7 @@ namespace Edge_Updater
                 {
                     if (File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' })[0] != buildversion[a])
                     {
-                        DownloadFile(a, b, c, d, e, f, g);
+                        await DownloadFile(a, b, c, d);
                     }
                 }
             }
@@ -649,7 +686,7 @@ namespace Edge_Updater
                 }
             }
         }
-        private void NewMethod4(string[] i2, int a, FileVersionInfo testm, int b)
+        private void NewMethod4(string s, int a, FileVersionInfo testm, int b)
         {
             Directory.Move(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion, instOrdner[b] + "\\" + testm.FileVersion);
             File.Copy(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge.exe", instOrdner[b] + "\\msedge.exe", true);
@@ -658,7 +695,7 @@ namespace Edge_Updater
             {
                 Directory.CreateDirectory(instOrdner[b] + "\\updates");
             }
-            File.WriteAllText(instOrdner[b] + "\\updates\\Version.log", testm.FileVersion + "|" + ring2[(a - 1)] + "|" + i2[5]);
+            File.WriteAllText(instOrdner[b] + "\\updates\\Version.log", testm.FileVersion + "|" + ring2[(a - 1)] + "|" + s);
             Directory.Delete(@"Update\" + entpDir[b], true);
             if (checkBox1.Checked)
             {
@@ -745,10 +782,135 @@ namespace Edge_Updater
             if ((instVersion[1] == ring2[a]) && (instVersion[2] == arch))
             {
                 toolTip.SetToolTip(button, instVersion[0]);
+                toolTip.IsBalloon = true;
             }
             else
             {
                 toolTip.SetToolTip(button, String.Empty);
+            }
+        }
+        private void CheckUpdate()
+        {
+            Label versionLabel = new Label
+            {
+                AutoSize = false,
+                TextAlign = ContentAlignment.BottomCenter,
+                Dock = DockStyle.None,
+                Location = new Point(2, 30),
+                Size = new Size(350, 25),
+            };
+            versionLabel.Font = new Font(versionLabel.Font.Name, 10F, FontStyle.Bold);
+            Label infoLabel = new Label
+            {
+                AutoSize = false,
+                TextAlign = ContentAlignment.BottomCenter,
+                Dock = DockStyle.None,
+                Location = new Point(2, 10),
+                Size = new Size(350, 20),
+                Text = "Eine neue Version ist verfügbar"
+            };
+            infoLabel.Font = new Font(infoLabel.Font.Name, 8.75F);
+            Label downLabel = new Label
+            {
+                Location = new Point(140, 60),
+                TextAlign = ContentAlignment.MiddleRight,
+                AutoSize = false,
+                Size = new Size(100, 23),
+                Text = "Jetzt Updaten"
+            };
+            Button laterButton = new Button
+            {
+                Location = new Point(245, 60),
+                Text = "Nein",
+                Size = new Size(40, 23),
+                BackColor = Color.FromArgb(224, 224, 224)
+            };
+            Button updateButton = new Button
+            {
+                Location = new Point(290, 60),
+                Text = "Ja",
+                Size = new Size(40, 23),
+                BackColor = Color.FromArgb(224, 224, 224)
+            };
+            GroupBox groupBoxupdate = new GroupBox
+            {
+                Location = new Point(12, 290),
+                Size = new Size(355, 90),
+                BackColor = Color.Aqua
+            };
+            groupBoxupdate.Controls.Add(updateButton);
+            groupBoxupdate.Controls.Add(laterButton);
+            groupBoxupdate.Controls.Add(downLabel);
+            groupBoxupdate.Controls.Add(infoLabel);
+            groupBoxupdate.Controls.Add(versionLabel);
+            updateButton.Click += new EventHandler(UpdateButton_Click);
+            laterButton.Click += new EventHandler(LaterButton_Click);
+            if (culture1.Name != "de-DE")
+            {
+                infoLabel.Text = "A new version is available";
+                laterButton.Text = "No";
+                updateButton.Text = "Yes";
+                downLabel.Text = "Update now";
+            }
+            void LaterButton_Click(object sender, EventArgs e)
+            {
+                Size = new Size(396, 342);
+                groupBoxupdate.Dispose();
+                Controls.Remove(groupBoxupdate);
+                groupBox3.Enabled = true;
+            }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            try
+            {
+                var request = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorEdgeUpd/raw/master/Version.txt");
+                var response = request.GetResponse();
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    var version = reader.ReadToEnd();
+                    versionLabel.Text = version;
+                    FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Firefox Updater.exe");
+                    if (Convert.ToDecimal(version) > Convert.ToDecimal(testm.FileVersion))
+                    {
+                        Controls.Add(groupBoxupdate);
+                        Size = new Size(396, 432);
+                        groupBox3.Enabled = false;
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception)
+            {
+                
+            }
+            void UpdateButton_Click(object sender, EventArgs e)
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                var request2 = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorEdgeUpd/raw/master/Version.txt");
+                var response2 = request2.GetResponse();
+                using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
+                {
+                    var version = reader.ReadToEnd();
+                    reader.Close();
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    using (WebClient myWebClient2 = new WebClient())
+                    {
+                        myWebClient2.DownloadFile($"https://github.com/UndertakerBen/PorEdgeUpd/releases/download/v{version}/Portable.Edge.Chromium.Updater.v{version}.7z", @"Portable.Edge.Chromium.Updater.v" + version + ".7z");
+                    }
+                    File.AppendAllText(@"Update.cmd", "@echo off" + "\n" +
+                        "timeout /t 1 /nobreak" + "\n" +
+                        "\"" + applicationPath + "\\Bin\\7zr.exe\" e \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\" -o\"" + applicationPath + "\" \"Portable Edge  (Chromium)  Updater.exe\"" + " -y\n" +
+                        "call cmd /c Start /b \"\" " + "\"" + applicationPath + "\\Portable Edge  (Chromium)  Updater.exe\"\n" +
+                        "del /f /q \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\"\n" +
+                        "del /f /q \"" + applicationPath + "\\Update.cmd\" && exit\n" +
+                        "exit\n");
+
+                    string arguments = " /c call Update.cmd";
+                    Process process = new Process();
+                    process.StartInfo.FileName = "cmd.exe";
+                    process.StartInfo.Arguments = arguments;
+                    process.Start();
+                    Close();
+                }
             }
         }
     }
