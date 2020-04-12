@@ -897,9 +897,9 @@ namespace Edge_Updater
                         myWebClient2.DownloadFile($"https://github.com/UndertakerBen/PorEdgeUpd/releases/download/v{version}/Portable.Edge.Chromium.Updater.v{version}.7z", @"Portable.Edge.Chromium.Updater.v" + version + ".7z");
                     }
                     File.AppendAllText(@"Update.cmd", "@echo off" + "\n" +
-                        "timeout /t 1 /nobreak" + "\n" +
-                        "\"" + applicationPath + "\\Bin\\7zr.exe\" e \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\" -o\"" + applicationPath + "\" \"Portable Edge  (Chromium)  Updater.exe\"" + " -y\n" +
-                        "call cmd /c Start /b \"\" " + "\"" + applicationPath + "\\Portable Edge  (Chromium)  Updater.exe\"\n" +
+                        "timeout /t 2 /nobreak" + "\n" +
+                        "\"" + applicationPath + "\\Bin\\7zr.exe\" e \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\" -o\"" + applicationPath + "\" \"Portable Edge (Chromium) Updater.exe\"" + " -y\n" +
+                        "call cmd /c Start /b \"\" " + "\"" + applicationPath + "\\Portable Edge (Chromium) Updater.exe\"\n" +
                         "del /f /q \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\"\n" +
                         "del /f /q \"" + applicationPath + "\\Update.cmd\" && exit\n" +
                         "exit\n");
