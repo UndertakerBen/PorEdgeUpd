@@ -868,7 +868,7 @@ namespace Edge_Updater
                 {
                     var version = reader.ReadToEnd();
                     versionLabel.Text = version;
-                    FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Firefox Updater.exe");
+                    FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Edge (Chromium) Updater.exe");
                     if (Convert.ToDecimal(version) > Convert.ToDecimal(testm.FileVersion))
                     {
                         Controls.Add(groupBoxupdate);
@@ -880,7 +880,7 @@ namespace Edge_Updater
             }
             catch (Exception)
             {
-                
+
             }
             void UpdateButton_Click(object sender, EventArgs e)
             {
