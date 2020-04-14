@@ -255,15 +255,15 @@ namespace Edge_Updater
         {
             GroupBox progressBox = new GroupBox
             {
-                Location = new Point(10, 290),
-                Size = new Size(359, 90),
+                Location = new Point(10, button10.Location.Y + 35),
+                Size = new Size(Size.Width - 30, 90),
                 BackColor = Color.Lavender,
             };
             Label title = new Label
             {
                 AutoSize = false,
                 Location = new Point(5, 10),
-                Size = new Size(349, 25),
+                Size = new Size(progressBox.Size.Width-10, 25),
                 Text = "Edge Chromium " + ring2[a] + " " + buildversion[a] + " " + architektur2[c],
                 TextAlign = ContentAlignment.BottomCenter
             };
@@ -278,21 +278,20 @@ namespace Edge_Updater
             Label percLabel = new Label
             {
                 AutoSize = false,
-                Location = new Point(253, 35),
+                Location = new Point(progressBox.Size.Width - 108, 35),
                 Size = new Size(100, 25),
                 TextAlign = ContentAlignment.BottomRight
             };
             ProgressBar progressBarneu = new ProgressBar
             {
                 Location = new Point(8, 65),
-                Size = new Size(341, 7)
+                Size = new Size(progressBox.Size.Width - 18, 7)
             };
             progressBox.Controls.Add(title);
             progressBox.Controls.Add(downloadLabel);
             progressBox.Controls.Add(percLabel);
             progressBox.Controls.Add(progressBarneu);
             Controls.Add(progressBox);
-            Size = new Size(396, 432);
             List<Task> list = new List<Task>();
             WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[a] + "-win-" + architektur[c] + "/versions/" + buildversion[a] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
             request.Method = "POST";
@@ -436,7 +435,6 @@ namespace Edge_Updater
             }
             await Task.WhenAll(list);
             await Task.Delay(2000);
-            Size = new Size(396, 342);
             Controls.Remove(progressBox);
         }
         public void CheckButton()
@@ -791,13 +789,19 @@ namespace Edge_Updater
         }
         private void CheckUpdate()
         {
+            GroupBox groupBoxupdate = new GroupBox
+            {
+                Location = new Point(12, button10.Location.Y + 35),
+                Size = new Size(Size.Width - 30, 90),
+                BackColor = Color.Aqua
+            };
             Label versionLabel = new Label
             {
                 AutoSize = false,
                 TextAlign = ContentAlignment.BottomCenter,
                 Dock = DockStyle.None,
                 Location = new Point(2, 30),
-                Size = new Size(350, 25),
+                Size = new Size(groupBoxupdate.Size.Width - 10, 25),
             };
             versionLabel.Font = new Font(versionLabel.Font.Name, 10F, FontStyle.Bold);
             Label infoLabel = new Label
@@ -806,13 +810,13 @@ namespace Edge_Updater
                 TextAlign = ContentAlignment.BottomCenter,
                 Dock = DockStyle.None,
                 Location = new Point(2, 10),
-                Size = new Size(350, 20),
+                Size = new Size(groupBoxupdate.Size.Width - 10, 20),
                 Text = "Eine neue Version ist verfügbar"
             };
             infoLabel.Font = new Font(infoLabel.Font.Name, 8.75F);
             Label downLabel = new Label
             {
-                Location = new Point(140, 60),
+                Location = new Point(groupBoxupdate.Size.Width - 245, 60),
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = false,
                 Size = new Size(100, 23),
@@ -820,23 +824,18 @@ namespace Edge_Updater
             };
             Button laterButton = new Button
             {
-                Location = new Point(245, 60),
+                Location = new Point(groupBoxupdate.Size.Width - 125, 60),
                 Text = "Nein",
-                Size = new Size(40, 23),
+                Size = new Size(50, 23),
                 BackColor = Color.FromArgb(224, 224, 224)
+               
             };
             Button updateButton = new Button
             {
-                Location = new Point(290, 60),
+                Location = new Point(groupBoxupdate.Size.Width - 70, 60),
                 Text = "Ja",
-                Size = new Size(40, 23),
+                Size = new Size(50, 23),
                 BackColor = Color.FromArgb(224, 224, 224)
-            };
-            GroupBox groupBoxupdate = new GroupBox
-            {
-                Location = new Point(12, 290),
-                Size = new Size(355, 90),
-                BackColor = Color.Aqua
             };
             groupBoxupdate.Controls.Add(updateButton);
             groupBoxupdate.Controls.Add(laterButton);
@@ -854,7 +853,6 @@ namespace Edge_Updater
             }
             void LaterButton_Click(object sender, EventArgs e)
             {
-                Size = new Size(396, 342);
                 groupBoxupdate.Dispose();
                 Controls.Remove(groupBoxupdate);
                 groupBox3.Enabled = true;
@@ -872,7 +870,6 @@ namespace Edge_Updater
                     if (Convert.ToDecimal(version) > Convert.ToDecimal(testm.FileVersion))
                     {
                         Controls.Add(groupBoxupdate);
-                        Size = new Size(396, 432);
                         groupBox3.Enabled = false;
                     }
                     reader.Close();

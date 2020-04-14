@@ -291,7 +291,7 @@ namespace Edge_Updater
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(21, 230);
+            this.checkBox1.Location = new System.Drawing.Point(26, 235);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(207, 17);
             this.checkBox1.TabIndex = 49;
@@ -302,7 +302,7 @@ namespace Edge_Updater
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(21, 253);
+            this.checkBox4.Location = new System.Drawing.Point(26, 258);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(150, 17);
             this.checkBox4.TabIndex = 51;
@@ -360,6 +360,7 @@ namespace Edge_Updater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.Color.GhostWhite;
             this.ClientSize = new System.Drawing.Size(380, 303);
@@ -370,6 +371,7 @@ namespace Edge_Updater
             this.Controls.Add(this.button9);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
+            this.Padding = new System.Windows.Forms.Padding(5);
             this.Text = "Portable Edge (Chromium) Updater";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.groupBox1.ResumeLayout(false);
