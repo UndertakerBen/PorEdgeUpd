@@ -17,40 +17,45 @@ namespace Edge_Stable_x86_Launcher
             CultureInfo culture1 = CultureInfo.CurrentUICulture;
             if (File.Exists(@"Edge Stable x86\msedge.exe"))
             {
-                if (!File.Exists(@"Edge Stable x86\Profile.txt"))
+                var sb = new System.Text.StringBuilder();
+                string[] CommandLineArgs = Environment.GetCommandLineArgs();
+                for (int i = 1; i < CommandLineArgs.Length; i++)
                 {
-                    if (culture1.Name == "de-DE")
+                    if (CommandLineArgs[i].Contains("="))
                     {
-                        Application.EnableVisualStyles();
-                        Application.SetCompatibleTextRenderingDefault(false);
-                        Application.Run(new Form1());
-                        String Arguments = File.ReadAllText(@"Edge Stable x86\Profile.txt");
-                        Process.Start(@"Edge Stable x86\msedge.exe", Arguments);
+                        string[] test = CommandLineArgs[i].Split(new char[] { '=' }, 2);
+                        sb.Append(" " + test[0] + "=\"" + test[1] + "\"");
                     }
                     else
                     {
-                        Application.EnableVisualStyles();
-                        Application.SetCompatibleTextRenderingDefault(false);
-                        Application.Run(new Form2());
-                        String Arguments = File.ReadAllText(@"Edge Stable x86\Profile.txt");
-                        Process.Start(@"Edge Stable x86\msedge.exe", Arguments);
+                        sb.Append(" " + CommandLineArgs[i]);
                     }
+                }
+                if (!File.Exists(@"Edge Stable x86\Profile.txt"))
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
+                    Application.Run(new Form1());
+                    String Arguments = File.ReadAllText(@"Edge Stable x86\Profile.txt") + sb.ToString();
+                    Process.Start(@"Edge Stable x86\msedge.exe", Arguments);
                 }
                 else
                 {
-                    String Arguments = File.ReadAllText(@"Edge Stable x86\Profile.txt");
+                    String Arguments = File.ReadAllText(@"Edge Stable x86\Profile.txt") + sb.ToString();
                     Process.Start(@"Edge Stable x86\msedge.exe", Arguments);
                 }
             }
-            else if (culture1.Name == "de-DE")
+            else if (culture1.TwoLetterISOLanguageName == "de")
             {
-                string message = "Edge Stable x86 ist nicht installiert";
-                MessageBox.Show(message, "Edge Stable x86 Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _ = MessageBox.Show("Edge (Chromium) ist nicht installiert", "Edge Stable x86 Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else if (culture1.TwoLetterISOLanguageName == "ru")
+            {
+                _ = MessageBox.Show("Microsoft Edge (Chromium) Portable не найден", "Stable Beta x86 Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
-                string message = "Edge Stable x86 is not installed";
-                MessageBox.Show(message, "Edge Stable x86 Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _ = MessageBox.Show("Edge (Chromium) is not installed", "Edge Stable x86 Launcher", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
     }

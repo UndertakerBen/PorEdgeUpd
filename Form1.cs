@@ -14,42 +14,50 @@ namespace Edge_Updater
 {
     public partial class Form1 : Form
     {
-        public static string[] ring = new string[4] { "Canary", "Dev", "Beta", "Stable" };
-        public static string[] ring2 = new string[8] { "Canary", "Developer", "Beta", "Stable", "Canary", "Developer", "Beta", "Stable" };
-        public static string[] buildversion = new string[8];
-        public static string[] architektur = new string[2] { "X86", "X64" };
-        public static string[] architektur2 = new string[2] { "x86", "x64" };
-        public static string[] instOrdner = new string[9] { "Edge Canary x86", "Edge Dev x86", "Edge Beta x86", "Edge Stable x86", "Edge Canary x64", "Edge Dev x64", "Edge Beta x64", "Edge Stable x64", "Edge" };
-        public static string[] entpDir = new string[9] { "Canary86", "Dev86", "Beta86", "Stable86", "Canary64", "Dev64", "Beta64", "Stable64", "Single" };
-        public static string[] icon = new string[4] { "4", "8", "9", "0" };
+        private static readonly string[] ring = new string[4] { "Canary", "Dev", "Beta", "Stable" };
+        private static readonly string[] ring2 = new string[8] { "Canary", "Developer", "Beta", "Stable", "Canary", "Developer", "Beta", "Stable" };
+        private static readonly string[] buildversion = new string[8];
+        private static readonly string[] architektur = new string[2] { "X86", "X64" };
+        private static readonly string[] architektur2 = new string[2] { "x86", "x64" };
+        private static readonly string[] instOrdner = new string[9] { "Edge Canary x86", "Edge Dev x86", "Edge Beta x86", "Edge Stable x86", "Edge Canary x64", "Edge Dev x64", "Edge Beta x64", "Edge Stable x64", "Edge" };
+        private static readonly string[] entpDir = new string[9] { "Canary86", "Dev86", "Beta86", "Stable86", "Canary64", "Dev64", "Beta64", "Stable64", "Single" };
+        private static readonly string[] icon = new string[4] { "4", "8", "9", "0" };
         WebClient webClient;
-        readonly string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-        readonly string applicationPath = Application.StartupPath;
-        readonly CultureInfo culture1 = CultureInfo.CurrentUICulture;
-        readonly ToolTip toolTip = new ToolTip();
+        private readonly string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        private readonly string applicationPath = Application.StartupPath;
+        private readonly CultureInfo culture1 = CultureInfo.CurrentUICulture;
+        private readonly ToolTip toolTip = new ToolTip();
         public Form1()
         {
-            InitializeComponent();
-            for (int i = 0; i <= 3; i++)
+            try
             {
-                WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-" + ring[i] + "-win-x64/versions/latest?action=select");
-                request.Method = "POST";
-                string postData = "{\"targetingAttributes\":{\"AppAp\":\"\",\"AppCohort\":\"\",\"AppLang\":\"de-de\",\"AppRollout\":\"1.0\",\"AppVersion\":\"\",\"IsMachine\":\"0\",\"OsArch\":\"x64\",\"OsPlatform\":\"win\",\"OsVersion\":\"\",\"Updater\":\"MicrosoftEdgeUpdate\",\"UpdaterVersion\":\"1.3.101.13\"}}";
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-                request.ContentType = "application/json";
-                request.ContentLength = byteArray.Length;
-                Stream dataStream = request.GetRequestStream();
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                dataStream.Close();
-                using (dataStream = request.GetResponse().GetResponseStream())
+                for (int i = 0; i <= 3; i++)
                 {
-                    StreamReader reader = new StreamReader(dataStream);
-                    string responseFromServer = reader.ReadToEnd();
-                    string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("Version\":\"")).Split(new char[] { '"' });
-                    buildversion[i] = URL[2];
-                    buildversion[i + 4] = URL[2];
+                    WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-" + ring[i] + "-win-x64/versions/latest?action=select");
+                    request.Method = "POST";
+                    string postData = "{\"targetingAttributes\":{\"AppAp\":\"\",\"AppCohort\":\"\",\"AppLang\":\"de-de\",\"AppRollout\":\"1.0\",\"AppVersion\":\"\",\"IsMachine\":\"0\",\"OsArch\":\"x64\",\"OsPlatform\":\"win\",\"OsVersion\":\"\",\"Updater\":\"MicrosoftEdgeUpdate\",\"UpdaterVersion\":\"1.3.101.13\"}}";
+                    byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                    request.ContentType = "application/json";
+                    request.ContentLength = byteArray.Length;
+                    Stream dataStream = request.GetRequestStream();
+                    dataStream.Write(byteArray, 0, byteArray.Length);
+                    dataStream.Close();
+                    using (dataStream = request.GetResponse().GetResponseStream())
+                    {
+                        StreamReader reader = new StreamReader(dataStream);
+                        string responseFromServer = reader.ReadToEnd();
+                        string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("Version\":\"")).Split(new char[] { '"' });
+                        buildversion[i] = URL[2];
+                        buildversion[i + 4] = URL[2];
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            InitializeComponent();
+           
             label2.Text = buildversion[0];
             label4.Text = buildversion[1];
             label6.Text = buildversion[2];
@@ -58,14 +66,32 @@ namespace Edge_Updater
             button9.Enabled = false;
             checkBox2.Enabled = false;
             checkBox3.Enabled = false;
-            if (culture1.Name != "de-DE")
+            switch (culture1.TwoLetterISOLanguageName)
             {
-                button10.Text = "Quit";
-                button9.Text = "Install all";
-                label10.Text = "Install all x86 and or x64";
-                checkBox4.Text = "Ignore version check";
-                checkBox1.Text = "Create a Folder for each version";
-                checkBox5.Text = "Create a shortcut on the desktop";
+                case "ru":
+                    button10.Text = "Выход";
+                    button9.Text = "Установить все";
+                    label10.Text = "Установить все версии x86 и/или x64";
+                    checkBox4.Text = "Игнорировать проверку версии";
+                    checkBox1.Text = "Разные версии в отдельных папках";
+                    checkBox5.Text = "Создать ярлык на рабочем столе";
+                    break;
+                case "de":
+                    button10.Text = "Beenden";
+                    button9.Text = "Alle Installieren";
+                    label10.Text = "Alle x86 und oder x64 installieren";
+                    checkBox4.Text = "Versionkontrolle ignorieren";
+                    checkBox1.Text = "Für jede Version einen eigenen Ordner";
+                    checkBox5.Text = "Eine Verknüpfung auf dem Desktop erstellen";
+                    break;
+                default:
+                    button10.Text = "Quit";
+                    button9.Text = "Install all";
+                    label10.Text = "Install all x86 and or x64";
+                    checkBox4.Text = "Ignore version check";
+                    checkBox1.Text = "Create a Folder for each version";
+                    checkBox5.Text = "Create a shortcut on the desktop";
+                    break;
             }
             if (IntPtr.Size != 8)
             {
@@ -118,6 +144,30 @@ namespace Edge_Updater
                     if (File.Exists(@"Edge\msedge.exe"))
                     {
                         CheckButton2();
+                    }
+                }
+            }
+            foreach (Process proc in Process.GetProcesses())
+            {
+                if (proc.ProcessName.Equals("msedge"))
+                {
+                    switch (culture1.TwoLetterISOLanguageName)
+                    {
+                        case "ru":
+                            {
+                                MessageBox.Show("Необходимо закрыть Microsoft Edge (Chromium) перед обновлением.", "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                return;
+                            }
+                        case "de":
+                            {
+                                MessageBox.Show("Bitte schließen Sie den laufenden Microsoft Edge (Chromium), bevor Sie den Browser aktualisieren.", "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                return;
+                            }
+                        default:
+                            {
+                                MessageBox.Show("Please close the running Microsoft Edge (Chromium) before updating the browser.", "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                return;
+                            }
                     }
                 }
             }
@@ -320,10 +370,8 @@ namespace Edge_Updater
                             button.BackColor = Color.Orange;
                         }
                         progressBarneu.Value = args.ProgressPercentage;
-                        downloadLabel.Text = string.Format("{0} MB's / {1} MB's",
-                            (args.BytesReceived / 1024d / 1024d).ToString("0.00"),
-                            (args.TotalBytesToReceive / 1024d / 1024d).ToString("0.00"));
-                        percLabel.Text = args.ProgressPercentage.ToString() + "%";
+                        downloadLabel.Text = $"{args.BytesReceived / 1024d / 1024d:0.00} MB's / {args.TotalBytesToReceive / 1024d / 1024d:0.00} MB's";
+                        percLabel.Text = $"{args.ProgressPercentage}%";
                     };
                     webClient.DownloadFileCompleted += (o, args) =>
                     {
@@ -338,7 +386,18 @@ namespace Edge_Updater
                         }
                         else
                         {
-                            downloadLabel.Text = culture1.Name != "de-DE" ? "Unpacking" : "Entpacken";
+                            switch (culture1.TwoLetterISOLanguageName)
+                            {
+                                case "ru":
+                                    downloadLabel.Text = "Распаковка";
+                                    break;
+                                case "de":
+                                    downloadLabel.Text = "Entpacken";
+                                    break;
+                                default:
+                                    downloadLabel.Text = "Unpacking";
+                                    break;
+                            }
                             string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
                             Process process = new Process();
                             process.StartInfo.FileName = @"Bin\7zr.exe";
@@ -420,7 +479,18 @@ namespace Edge_Updater
                             File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
                         }
                         File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
-                        downloadLabel.Text = culture1.Name != "de-DE" ? "Unpacked" : "Entpackt";
+                        switch (culture1.TwoLetterISOLanguageName)
+                        {
+                            case "ru":
+                                downloadLabel.Text = "Распакованный";
+                                break;
+                            case "de":
+                                downloadLabel.Text = "Entpackt";
+                                break;
+                            default:
+                                downloadLabel.Text = "Unpacked";
+                                break;
+                        }
                     };
                     try
                     {
@@ -456,13 +526,17 @@ namespace Edge_Updater
                     }
                     else if (buildversion[i] != instVersion[0])
                     {
-                        if (culture1.Name != "de-DE")
+                        switch (culture1.TwoLetterISOLanguageName)
                         {
-                            button9.Text = "Update all";
-                        }
-                        else
-                        {
-                            button9.Text = "Alle Updaten";
+                            case "ru":
+                                button9.Text = "Обновить все";
+                                break;
+                            case "de":
+                                button9.Text = "Alle Updaten";
+                                break;
+                            default:
+                                button9.Text = "Update all";
+                                break;
                         }
                         button9.Enabled = true;
                         button9.BackColor = Color.FromArgb(224, 224, 224);
@@ -553,15 +627,17 @@ namespace Edge_Updater
         }
         public void Message1()
         {
-            if (culture1.Name != "de-DE")
+            switch (culture1.TwoLetterISOLanguageName)
             {
-                MessageBox.Show("The same version is already installed", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-            else
-            {
-                MessageBox.Show("Die selbe Version ist bereits installiert", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
+                case "ru":
+                    MessageBox.Show("Данная версия уже установлена", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                case "de":
+                    MessageBox.Show("Die selbe Version ist bereits installiert", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                default:
+                    MessageBox.Show("The same version is already installed", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
             }
         }
         private void CheckBox2_CheckedChanged(object sender, EventArgs e)
@@ -791,8 +867,8 @@ namespace Edge_Updater
         {
             GroupBox groupBoxupdate = new GroupBox
             {
-                Location = new Point(12, button10.Location.Y + 35),
-                Size = new Size(Size.Width - 30, 90),
+                Location = new Point(groupBox3.Location.X, button10.Location.Y + button10.Size.Height + 5),
+                Size = new Size(groupBox3.Width, 90),
                 BackColor = Color.Aqua
             };
             Label versionLabel = new Label
@@ -801,7 +877,7 @@ namespace Edge_Updater
                 TextAlign = ContentAlignment.BottomCenter,
                 Dock = DockStyle.None,
                 Location = new Point(2, 30),
-                Size = new Size(groupBoxupdate.Size.Width - 10, 25),
+                Size = new Size(groupBoxupdate.Width - 4, 25),
             };
             versionLabel.Font = new Font(versionLabel.Font.Name, 10F, FontStyle.Bold);
             Label infoLabel = new Label
@@ -810,33 +886,31 @@ namespace Edge_Updater
                 TextAlign = ContentAlignment.BottomCenter,
                 Dock = DockStyle.None,
                 Location = new Point(2, 10),
-                Size = new Size(groupBoxupdate.Size.Width - 10, 20),
-                Text = "Eine neue Version ist verfügbar"
+                Size = new Size(groupBoxupdate.Width - 4, 20),
             };
             infoLabel.Font = new Font(infoLabel.Font.Name, 8.75F);
             Label downLabel = new Label
             {
-                Location = new Point(groupBoxupdate.Size.Width - 245, 60),
                 TextAlign = ContentAlignment.MiddleRight,
                 AutoSize = false,
                 Size = new Size(100, 23),
-                Text = "Jetzt Updaten"
             };
             Button laterButton = new Button
             {
-                Location = new Point(groupBoxupdate.Size.Width - 125, 60),
-                Text = "Nein",
                 Size = new Size(50, 23),
                 BackColor = Color.FromArgb(224, 224, 224)
                
             };
             Button updateButton = new Button
             {
-                Location = new Point(groupBoxupdate.Size.Width - 70, 60),
+                Location = new Point(groupBoxupdate.Width - Width - 10, 60),
                 Text = "Ja",
                 Size = new Size(50, 23),
                 BackColor = Color.FromArgb(224, 224, 224)
             };
+            updateButton.Location = new Point(groupBoxupdate.Width - updateButton.Width - 10, 60);
+            laterButton.Location = new Point(updateButton.Location.X - laterButton.Width - 5, 60);
+            downLabel.Location = new Point(laterButton.Location.X - downLabel.Width - 20, 60);
             groupBoxupdate.Controls.Add(updateButton);
             groupBoxupdate.Controls.Add(laterButton);
             groupBoxupdate.Controls.Add(downLabel);
@@ -844,12 +918,26 @@ namespace Edge_Updater
             groupBoxupdate.Controls.Add(versionLabel);
             updateButton.Click += new EventHandler(UpdateButton_Click);
             laterButton.Click += new EventHandler(LaterButton_Click);
-            if (culture1.Name != "de-DE")
+            switch (culture1.TwoLetterISOLanguageName)
             {
-                infoLabel.Text = "A new version is available";
-                laterButton.Text = "No";
-                updateButton.Text = "Yes";
-                downLabel.Text = "Update now";
+                case "ru":
+                    infoLabel.Text = "Доступна новая версия";
+                    laterButton.Text = "нет";
+                    updateButton.Text = "Да";
+                    downLabel.Text = "ОБНОВИТЬ";
+                    break;
+                case "de":
+                    infoLabel.Text = "Eine neue Version ist verfügbar";
+                    laterButton.Text = "Nein";
+                    updateButton.Text = "Ja";
+                    downLabel.Text = "Jetzt Updaten";
+                    break;
+                default:
+                    infoLabel.Text = "A new version is available";
+                    laterButton.Text = "No";
+                    updateButton.Text = "Yes";
+                    downLabel.Text = "Update now";
+                    break;
             }
             void LaterButton_Click(object sender, EventArgs e)
             {
@@ -865,9 +953,9 @@ namespace Edge_Updater
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
                     var version = reader.ReadToEnd();
-                    versionLabel.Text = version;
                     FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Edge (Chromium) Updater.exe");
-                    if (Convert.ToDecimal(version) > Convert.ToDecimal(testm.FileVersion))
+                    versionLabel.Text = testm.FileVersion + "  >>> " + version;
+                    if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
                     {
                         Controls.Add(groupBoxupdate);
                         groupBox3.Enabled = false;
@@ -908,6 +996,56 @@ namespace Edge_Updater
                     process.Start();
                     Close();
                 }
+            }
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            try
+            {
+                var request = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorEdgeUpd/raw/master/Launcher/Version.txt");
+                var response = request.GetResponse();
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    var version = reader.ReadToEnd();
+                    FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\Edge Launcher.exe");
+                    if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
+                    {
+                        reader.Close();
+                        try
+                        {
+                            using (WebClient myWebClient2 = new WebClient())
+                            {
+                                myWebClient2.DownloadFile("https://github.com/UndertakerBen/PorEdgeUpd/raw/master/Launcher/Launcher.7z", @"Launcher.7z");
+                            }
+                            string arguments = " x " + @"Launcher.7z" + " -o" + @"Bin\\Launcher" + " -y";
+                            Process process = new Process();
+                            process.StartInfo.FileName = @"Bin\7zr.exe";
+                            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                            process.StartInfo.Arguments = arguments;
+                            process.Start();
+                            process.WaitForExit();
+                            File.Delete(@"Launcher.7z");
+                            foreach (string launcher in instOrdner)
+                            {
+                                if (File.Exists(launcher + " Launcher.exe"))
+                                {
+                                    FileVersionInfo binLauncher = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\" + launcher + " Launcher.exe");
+                                    FileVersionInfo istLauncher = FileVersionInfo.GetVersionInfo(applicationPath + "\\" + launcher + " Launcher.exe");
+                                    if (Convert.ToDecimal(binLauncher.FileVersion) > Convert.ToDecimal(istLauncher.FileVersion))
+                                    {
+                                        File.Copy(@"bin\\Launcher\\" + launcher + " Launcher.exe", launcher + " Launcher.exe", true);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
             }
         }
     }
