@@ -291,7 +291,7 @@ namespace Edge_Updater
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(26, 235);
+            this.checkBox1.Location = new System.Drawing.Point(21, 225);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(207, 17);
             this.checkBox1.TabIndex = 49;
@@ -302,7 +302,7 @@ namespace Edge_Updater
             // checkBox4
             // 
             this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(26, 258);
+            this.checkBox4.Location = new System.Drawing.Point(21, 248);
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(150, 17);
             this.checkBox4.TabIndex = 51;

@@ -408,42 +408,7 @@ namespace Edge_Updater
                             process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[b] + " -y";
                             process.Start();
                             process.WaitForExit();
-                            if ((File.Exists(@"Update\" + entpDir[d] + "\\chrome-bin\\msedge.exe")) && (File.Exists(instOrdner[b] + "\\updates\\Version.log")))
-                            {
-                                string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
-                                FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe");
-                                if (checkBox1.Checked)
-                                {
-                                    if (testm.FileVersion != instVersion[0])
-                                    {
-                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
-                                        {
-                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
-                                        }
-                                        Thread.Sleep(2000);
-                                        NewMethod4(architektur2[c], d, testm, b);
-                                    }
-                                    else if ((testm.FileVersion == instVersion[0]) && (checkBox4.Checked))
-                                    {
-                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
-                                        {
-                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
-                                        }
-                                        Thread.Sleep(2000);
-                                        NewMethod4(architektur2[c], d, testm, b);
-                                    }
-                                }
-                                else if (!checkBox1.Checked)
-                                {
-                                    if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
-                                    {
-                                        Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
-                                    }
-                                    Thread.Sleep(2000);
-                                    NewMethod4(architektur2[c], d, testm, b);
-                                }
-                            }
-                            else
+                            if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
                             {
                                 if (!Directory.Exists(instOrdner[b]))
                                 {
@@ -461,6 +426,25 @@ namespace Edge_Updater
                                     }
                                 }
                                 NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe"), b);
+                            }
+                            else if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"))
+                            {
+                                if (!Directory.Exists(instOrdner[b]))
+                                {
+                                    Directory.CreateDirectory(instOrdner[b]);
+                                }
+                                else if (Directory.Exists(instOrdner[b]))
+                                {
+                                    if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                    {
+                                        string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                        {
+                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                        }
+                                    }
+                                }
+                                NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"), b);
                             }
                         }
                         if (checkBox5.Checked)
@@ -762,9 +746,18 @@ namespace Edge_Updater
         }
         private void NewMethod4(string s, int a, FileVersionInfo testm, int b)
         {
-            Directory.Move(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion, instOrdner[b] + "\\" + testm.FileVersion);
-            File.Copy(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge.exe", instOrdner[b] + "\\msedge.exe", true);
-            File.Copy(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge_proxy.exe", instOrdner[b] + "\\msedge_proxy.exe", true);
+            if (File.Exists(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion + "\\msedge.exe"))
+            {
+                Directory.Move(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion, instOrdner[b] + "\\" + testm.FileVersion);
+                File.Copy(instOrdner[b] + "\\" + testm.FileVersion + "\\msedge.exe", instOrdner[b] + "\\msedge.exe", true);
+                File.Copy(instOrdner[b] + "\\" + testm.FileVersion + "\\msedge_proxy.exe", instOrdner[b] + "\\msedge_proxy.exe", true);
+            }
+            else if (File.Exists(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
+            {
+                Directory.Move(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion, instOrdner[b] + "\\" + testm.FileVersion);
+                File.Copy(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge.exe", instOrdner[b] + "\\msedge.exe", true);
+                File.Copy(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge_proxy.exe", instOrdner[b] + "\\msedge_proxy.exe", true);
+            }
             if (!Directory.Exists(instOrdner[b] + "\\updates"))
             {
                 Directory.CreateDirectory(instOrdner[b] + "\\updates");
