@@ -6,6 +6,7 @@ namespace Edge_Canary_x86_Launcher
 {
     public partial class Form1 : Form 
     {
+        private readonly string applicationPath = Application.StartupPath;
         public Form1()
         {
             CultureInfo culture = CultureInfo.CurrentUICulture;
@@ -33,17 +34,17 @@ namespace Edge_Canary_x86_Launcher
         {
             if (radioButton1.Checked)
             {
-                File.WriteAllText(@"Edge Canary x86\Profile.txt", "--user-data-dir=\"profile\"");
+                File.WriteAllText(applicationPath + "\\Edge Canary x86\\Profile.txt", "--user-data-dir=\"profile\"");
                 this.Close();
             }
             if (radioButton2.Checked)
             {
-                File.WriteAllText(@"Edge Canary x86\Profile.txt", "--user-data-dir=\"Edge Canary x86\\profile\"");
+                File.WriteAllText(applicationPath + "\\Edge Canary x86\\Profile.txt", "--user-data-dir=\"Edge Canary x86\\profile\"");
                 this.Close();
             }
             if (radioButton3.Checked)
             {
-                File.WriteAllText(@"Edge Canary x86\Profile.txt", "");
+                File.WriteAllText(applicationPath + "\\Edge Canary x86\\Profile.txt", "");
                 this.Close();
             }
         }

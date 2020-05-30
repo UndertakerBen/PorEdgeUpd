@@ -6,6 +6,7 @@ namespace Edge_Dev_x64_Launcher
 {
     public partial class Form1 : Form 
     {
+        private readonly string applicationPath = Application.StartupPath;
         public Form1()
         {
             CultureInfo culture = CultureInfo.CurrentUICulture;
@@ -33,17 +34,17 @@ namespace Edge_Dev_x64_Launcher
         {
             if (radioButton1.Checked)
             {
-                File.WriteAllText(@"Edge Dev x64\Profile.txt", "--user-data-dir=\"profile\"");
+                File.WriteAllText(applicationPath + "\\Edge Dev x64\\Profile.txt", "--user-data-dir=\"profile\"");
                 this.Close();
             }
             if (radioButton2.Checked)
             {
-                File.WriteAllText(@"Edge Dev x64\Profile.txt", "--user-data-dir=\"Edge Dev x64\\profile\"");
+                File.WriteAllText(applicationPath + "\\Edge Dev x64\\Profile.txt", "--user-data-dir=\"Edge Dev x64\\profile\"");
                 this.Close();
             }
             if (radioButton3.Checked)
             {
-                File.WriteAllText(@"Edge Dev x64\Profile.txt", "");
+                File.WriteAllText(applicationPath + "\\Edge Dev x64\\Profile.txt", "");
                 this.Close();
             }
         }

@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,7 +23,6 @@ namespace Edge_Updater
         WebClient webClient;
         private readonly string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         private readonly string applicationPath = Application.StartupPath;
-        private readonly CultureInfo culture1 = CultureInfo.CurrentUICulture;
         private readonly ToolTip toolTip = new ToolTip();
         public Form1()
         {
@@ -35,7 +32,7 @@ namespace Edge_Updater
                 {
                     WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-" + ring[i] + "-win-x64/versions/latest?action=select");
                     request.Method = "POST";
-                    string postData = "{\"targetingAttributes\":{\"AppAp\":\"\",\"AppCohort\":\"\",\"AppLang\":\"de-de\",\"AppRollout\":\"1.0\",\"AppVersion\":\"\",\"IsMachine\":\"0\",\"OsArch\":\"x64\",\"OsPlatform\":\"win\",\"OsVersion\":\"\",\"Updater\":\"MicrosoftEdgeUpdate\",\"UpdaterVersion\":\"1.3.101.13\"}}";
+                    string postData = "{\"targetingAttributes\":{\"AppAp\":\"\",\"AppCohort\":\"\",\"AppLang\":\"de\",\"AppMajorVersion\":\"\",\"AppRollout\":\"\",\"AppVersion\":\"\",\"IsMachine\":\"true\",\"OsArch\":\"x64\",\"OsPlatform\":\"win\",\"OsVersion\":\"\",\"Priority\":\"1\",\"Updater\":\"MicrosoftEdgeUpdate\",\"UpdaterVersion\":\"1.3.127.21\"}}";
                     byte[] byteArray = Encoding.UTF8.GetBytes(postData);
                     request.ContentType = "application/json";
                     request.ContentLength = byteArray.Length;
@@ -57,7 +54,6 @@ namespace Edge_Updater
                 MessageBox.Show(ex.Message);
             }
             InitializeComponent();
-           
             label2.Text = buildversion[0];
             label4.Text = buildversion[1];
             label6.Text = buildversion[2];
@@ -66,33 +62,6 @@ namespace Edge_Updater
             button9.Enabled = false;
             checkBox2.Enabled = false;
             checkBox3.Enabled = false;
-            switch (culture1.TwoLetterISOLanguageName)
-            {
-                case "ru":
-                    button10.Text = "Выход";
-                    button9.Text = "Установить все";
-                    label10.Text = "Установить все версии x86 и/или x64";
-                    checkBox4.Text = "Игнорировать проверку версии";
-                    checkBox1.Text = "Разные версии в отдельных папках";
-                    checkBox5.Text = "Создать ярлык на рабочем столе";
-                    break;
-                case "de":
-                    button10.Text = "Beenden";
-                    button9.Text = "Alle Installieren";
-                    label10.Text = "Alle x86 und oder x64 installieren";
-                    checkBox4.Text = "Versionkontrolle ignorieren";
-                    checkBox1.Text = "Für jede Version einen eigenen Ordner";
-                    checkBox5.Text = "Eine Verknüpfung auf dem Desktop erstellen";
-                    break;
-                default:
-                    button10.Text = "Quit";
-                    button9.Text = "Install all";
-                    label10.Text = "Install all x86 and or x64";
-                    checkBox4.Text = "Ignore version check";
-                    checkBox1.Text = "Create a Folder for each version";
-                    checkBox5.Text = "Create a shortcut on the desktop";
-                    break;
-            }
             if (IntPtr.Size != 8)
             {
                 button5.Visible = false;
@@ -151,24 +120,7 @@ namespace Edge_Updater
             {
                 if (proc.ProcessName.Equals("msedge"))
                 {
-                    switch (culture1.TwoLetterISOLanguageName)
-                    {
-                        case "ru":
-                            {
-                                MessageBox.Show("Необходимо закрыть Microsoft Edge (Chromium) перед обновлением.", "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                return;
-                            }
-                        case "de":
-                            {
-                                MessageBox.Show("Bitte schließen Sie den laufenden Microsoft Edge (Chromium), bevor Sie den Browser aktualisieren.", "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                return;
-                            }
-                        default:
-                            {
-                                MessageBox.Show("Please close the running Microsoft Edge (Chromium) before updating the browser.", "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                return;
-                            }
-                    }
+                    MessageBox.Show(Langfile.Texts("MeassageRunning"), "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
             CheckUpdate();
@@ -305,8 +257,8 @@ namespace Edge_Updater
         {
             GroupBox progressBox = new GroupBox
             {
-                Location = new Point(10, button10.Location.Y + 35),
-                Size = new Size(Size.Width - 30, 90),
+                Location = new Point(groupBox3.Location.X, button10.Location.Y + button10.Size.Height + 5),
+                Size = new Size(groupBox3.Width, 90),
                 BackColor = Color.Lavender,
             };
             Label title = new Label
@@ -358,7 +310,6 @@ namespace Edge_Updater
                 string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + ".exe")).Split(new char[] { '"' });
                 WebClient myWebClient = new WebClient();
                 Uri uri = new Uri(URL[4]);
-
                 using (webClient = new WebClient())
                 {
                     webClient.DownloadProgressChanged += (o, args) =>
@@ -386,18 +337,7 @@ namespace Edge_Updater
                         }
                         else
                         {
-                            switch (culture1.TwoLetterISOLanguageName)
-                            {
-                                case "ru":
-                                    downloadLabel.Text = "Распаковка";
-                                    break;
-                                case "de":
-                                    downloadLabel.Text = "Entpacken";
-                                    break;
-                                default:
-                                    downloadLabel.Text = "Unpacking";
-                                    break;
-                            }
+                            downloadLabel.Text = Langfile.Texts("downUnpstart");
                             string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
                             Process process = new Process();
                             process.StartInfo.FileName = @"Bin\7zr.exe";
@@ -463,18 +403,7 @@ namespace Edge_Updater
                             File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
                         }
                         File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
-                        switch (culture1.TwoLetterISOLanguageName)
-                        {
-                            case "ru":
-                                downloadLabel.Text = "Распакованный";
-                                break;
-                            case "de":
-                                downloadLabel.Text = "Entpackt";
-                                break;
-                            default:
-                                downloadLabel.Text = "Unpacked";
-                                break;
-                        }
+                        downloadLabel.Text = Langfile.Texts("downUnpfine");
                     };
                     try
                     {
@@ -510,18 +439,7 @@ namespace Edge_Updater
                     }
                     else if (buildversion[i] != instVersion[0])
                     {
-                        switch (culture1.TwoLetterISOLanguageName)
-                        {
-                            case "ru":
-                                button9.Text = "Обновить все";
-                                break;
-                            case "de":
-                                button9.Text = "Alle Updaten";
-                                break;
-                            default:
-                                button9.Text = "Update all";
-                                break;
-                        }
+                        button9.Text = Langfile.Texts("Button9UAll");
                         button9.Enabled = true;
                         button9.BackColor = Color.FromArgb(224, 224, 224);
                         if (buttons.Length > 0)
@@ -611,18 +529,7 @@ namespace Edge_Updater
         }
         public void Message1()
         {
-            switch (culture1.TwoLetterISOLanguageName)
-            {
-                case "ru":
-                    MessageBox.Show("Данная версия уже установлена", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                case "de":
-                    MessageBox.Show("Die selbe Version ist bereits installiert", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-                default:
-                    MessageBox.Show("The same version is already installed", "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return;
-            }
+            MessageBox.Show(Langfile.Texts("MeassageVersion"), "Portabel Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
         private void CheckBox2_CheckedChanged(object sender, EventArgs e)
         {
@@ -911,27 +818,10 @@ namespace Edge_Updater
             groupBoxupdate.Controls.Add(versionLabel);
             updateButton.Click += new EventHandler(UpdateButton_Click);
             laterButton.Click += new EventHandler(LaterButton_Click);
-            switch (culture1.TwoLetterISOLanguageName)
-            {
-                case "ru":
-                    infoLabel.Text = "Доступна новая версия";
-                    laterButton.Text = "нет";
-                    updateButton.Text = "Да";
-                    downLabel.Text = "ОБНОВИТЬ";
-                    break;
-                case "de":
-                    infoLabel.Text = "Eine neue Version ist verfügbar";
-                    laterButton.Text = "Nein";
-                    updateButton.Text = "Ja";
-                    downLabel.Text = "Jetzt Updaten";
-                    break;
-                default:
-                    infoLabel.Text = "A new version is available";
-                    laterButton.Text = "No";
-                    updateButton.Text = "Yes";
-                    downLabel.Text = "Update now";
-                    break;
-            }
+            infoLabel.Text = Langfile.Texts("infoLabel");
+            laterButton.Text = Langfile.Texts("laterButton");
+            updateButton.Text = Langfile.Texts("updateButton");
+            downLabel.Text = Langfile.Texts("downLabel");
             void LaterButton_Click(object sender, EventArgs e)
             {
                 groupBoxupdate.Dispose();
@@ -1039,6 +929,294 @@ namespace Edge_Updater
             catch (Exception)
             {
 
+            }
+        }
+        private void VersionsInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FileVersionInfo updVersion = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Edge (Chromium) Updater.exe");
+            FileVersionInfo launcherVersion = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\Edge Launcher.exe");
+            MessageBox.Show("Updater Version - " + updVersion.FileVersion + "\nLauncher Version - " + launcherVersion.FileVersion, "Version Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        private void RegistrierenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[8], 0);
+        }
+        private void RegistrierenToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[3], 0);
+        }
+        private void RegistrierenToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[7], 0);
+        }
+        private void RegistrierenToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[2], 9);
+        }
+        private void RegistrierenToolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[6], 9);
+        }
+        private void RegisrierenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[1], 8);
+        }
+        private void RegistrierenToolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[5], 8);
+        }
+        private void RegistrierenToolStripMenuItem6_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[0], 4);
+        }
+        private void RegistrierenToolStripMenuItem7_Click(object sender, EventArgs e)
+        {
+            Regfile.RegCreate(applicationPath, instOrdner[4], 4);
+        }
+        private void EntfernenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EnfernenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem1.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EntfernenToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem2.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EnfernenToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem3.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EnfernenToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem4.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EnfernenToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            regisrierenToolStripMenuItem.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EnfernenToolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem5.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EnfernenToolStripMenuItem5_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem6.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void EnfernenToolStripMenuItem6_Click(object sender, EventArgs e)
+        {
+            registrierenToolStripMenuItem7.Enabled = true;
+            Regfile.RegDel();
+        }
+        private void ExtrasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Microsoft.Win32.RegistryKey key;
+                if (Microsoft.Win32.Registry.GetValue("HKEY_Current_User\\Software\\Clients\\StartMenuInternet\\Microsoft Edge.PORTABLE", default, null) != null)
+                {
+                    key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("Software\\Clients\\StartMenuInternet\\Microsoft Edge.PORTABLE", false);
+                    switch (key.GetValue(default).ToString())
+                    {
+                        case "Microsoft Edge Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Stable x86 Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem1.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Stable x64 Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem2.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Beta x86 Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem3.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Beta x64 Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem4.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Dev x86 Portable":
+                            key.Close();
+                            regisrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Dev x64 Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem5.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Canary x86 Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem6.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                        case "Microsoft Edge Canary x64 Portable":
+                            key.Close();
+                            registrierenToolStripMenuItem7.Enabled = false;
+                            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                            break;
+                    }
+                }
+                else
+                {
+                    if (Directory.Exists(@"Edge"))
+                    {
+                        edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Stable x86"))
+                    {
+                        edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Stable x64"))
+                    {
+                        edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Beta x86"))
+                    {
+                        edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Beta x64"))
+                    {
+                        edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Dev x86"))
+                    {
+                        edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Dev x64"))
+                    {
+                        edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Canary x86"))
+                    {
+                        edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                    if (Directory.Exists(@"Edge Canary x64"))
+                    {
+                        edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
+                    }
+                    else
+                    {
+                        edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                
             }
         }
     }
