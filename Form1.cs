@@ -51,7 +51,14 @@ namespace Edge_Updater
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                if ((buildversion[0] == null) || (buildversion[1] == null) || (buildversion[2] == null) || (buildversion[3] == null))
+                {
+                    MessageBox.Show(Langfile.Texts("NoVersion") + "\n\nError Message:\n\r" + ex.Message);
+                }
+                else
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             InitializeComponent();
             label2.Text = buildversion[0];
@@ -116,6 +123,13 @@ namespace Edge_Updater
                     }
                 }
             }
+            CheckUpdate();
+            if ((buildversion[0] == null) || (buildversion[1] == null) || (buildversion[2] == null) || (buildversion[3] == null))
+            {
+                groupBox3.Enabled = false;
+                button9.Enabled = false;
+                checkBox1.Enabled = false;
+            }
             foreach (Process proc in Process.GetProcesses())
             {
                 if (proc.ProcessName.Equals("msedge"))
@@ -123,7 +137,6 @@ namespace Edge_Updater
                     MessageBox.Show(Langfile.Texts("MeassageRunning"), "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
-            CheckUpdate();
         }
         private async void Button1_Click(object sender, EventArgs e)
         {
