@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -30,15 +31,16 @@ namespace Edge_Updater
             {
                 for (int i = 0; i <= 3; i++)
                 {
-                    WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-" + ring[i] + "-win-x64/versions/latest?action=select");
-                    request.Method = "POST";
-                    string postData = "{\"targetingAttributes\":{\"AppAp\":\"\",\"AppCohort\":\"\",\"AppLang\":\"de\",\"AppMajorVersion\":\"\",\"AppRollout\":\"\",\"AppVersion\":\"\",\"IsMachine\":\"true\",\"OsArch\":\"x64\",\"OsPlatform\":\"win\",\"OsVersion\":\"\",\"Priority\":\"1\",\"Updater\":\"MicrosoftEdgeUpdate\",\"UpdaterVersion\":\"1.3.127.21\"}}";
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    string postData = "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\",}}";
                     byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-{ring[i].ToLower()}-win-x64/versions/latest?action=select");
+                    request.Method = "POST";
+                    request.UserAgent = "Microsoft Edge Update/1.3.129.35;winhttp";
                     request.ContentType = "application/json";
                     request.ContentLength = byteArray.Length;
                     Stream dataStream = request.GetRequestStream();
                     dataStream.Write(byteArray, 0, byteArray.Length);
-                    dataStream.Close();
                     using (dataStream = request.GetResponse().GetResponseStream())
                     {
                         StreamReader reader = new StreamReader(dataStream);
@@ -46,6 +48,8 @@ namespace Edge_Updater
                         string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("Version\":\"")).Split(new char[] { '"' });
                         buildversion[i] = URL[2];
                         buildversion[i + 4] = URL[2];
+                        reader.Close();
+                        dataStream.Close();
                     }
                 }
             }
@@ -53,7 +57,7 @@ namespace Edge_Updater
             {
                 if ((buildversion[0] == null) || (buildversion[1] == null) || (buildversion[2] == null) || (buildversion[3] == null))
                 {
-                    MessageBox.Show(Langfile.Texts("NoVersion") + "\n\nError Message:\n\r" + ex.Message);
+                    MessageBox.Show(ex.Message);
                 }
                 else
                 {
