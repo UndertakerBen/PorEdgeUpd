@@ -339,127 +339,135 @@ namespace Edge_Updater
             progressBox.Controls.Add(progressBarneu);
             Controls.Add(progressBox);
             List<Task> list = new List<Task>();
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[a] + "-win-" + architektur[c] + "/versions/" + buildversion[a] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
-            request.Method = "POST";
-            string postData = "{}";
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-            request.ContentType = "application/json";
-            request.ContentLength = byteArray.Length;
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
-            using (dataStream = request.GetResponse().GetResponseStream())
+            try
             {
-                string responseFromServer = new StreamReader(dataStream).ReadToEnd();
-                string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + ".exe")).Split(new char[] { '"' });
-                WebClient myWebClient = new WebClient();
-                Uri uri = new Uri(URL[4]);
-                using (webClient = new WebClient())
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[a] + "-win-" + architektur[c] + "/versions/" + buildversion[a] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
+                request.UserAgent = "Microsoft Edge Update/ 1.3.139.59; winhttp";
+                request.Method = "POST";
+                string postData = "{}";
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                request.ContentType = "application/json";
+                request.ContentLength = byteArray.Length;
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                dataStream.Close();
+                using (dataStream = request.GetResponse().GetResponseStream())
                 {
-                    webClient.DownloadProgressChanged += (o, args) =>
+                    string responseFromServer = new StreamReader(dataStream).ReadToEnd();
+                    string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + ".exe")).Split(new char[] { '"' });
+                    WebClient myWebClient = new WebClient();
+                    Uri uri = new Uri(URL[4]);
+                    using (webClient = new WebClient())
                     {
-                        Control[] buttons = Controls.Find("button" + d, true);
-                        if (buttons.Length > 0)
+                        webClient.DownloadProgressChanged += (o, args) =>
                         {
-                            Button button = (Button)buttons[0];
-                            button.BackColor = Color.Orange;
-                        }
-                        progressBarneu.Value = args.ProgressPercentage;
-                        downloadLabel.Text = $"{args.BytesReceived / 1024d / 1024d:0.00} MB's / {args.TotalBytesToReceive / 1024d / 1024d:0.00} MB's";
-                        percLabel.Text = $"{args.ProgressPercentage}%";
-                    };
-                    webClient.DownloadFileCompleted += (o, args) =>
-                    {
-                        if (args.Error != null)
+                            Control[] buttons = Controls.Find("button" + d, true);
+                            if (buttons.Length > 0)
+                            {
+                                Button button = (Button)buttons[0];
+                                button.BackColor = Color.Orange;
+                            }
+                            progressBarneu.Value = args.ProgressPercentage;
+                            downloadLabel.Text = $"{args.BytesReceived / 1024d / 1024d:0.00} MB's / {args.TotalBytesToReceive / 1024d / 1024d:0.00} MB's";
+                            percLabel.Text = $"{args.ProgressPercentage}%";
+                        };
+                        webClient.DownloadFileCompleted += (o, args) =>
+                        {
+                            if (args.Error != null)
+                            {
+                                var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                                list.Add(task);
+                            }
+                            if (args.Cancelled == true)
+                            {
+                                MessageBox.Show("Download has been canceled.");
+                            }
+                            else
+                            {
+                                downloadLabel.Text = Langfile.Texts("downUnpstart");
+                                string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
+                                Process process = new Process();
+                                process.StartInfo.FileName = @"Bin\7zr.exe";
+                                process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                                process.StartInfo.Arguments = arguments;
+                                process.Start();
+                                process.WaitForExit();
+                                process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[b] + " -y";
+                                process.Start();
+                                process.WaitForExit();
+                                if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
+                                {
+                                    if (!Directory.Exists(instOrdner[b]))
+                                    {
+                                        Directory.CreateDirectory(instOrdner[b]);
+                                    }
+                                    else if (Directory.Exists(instOrdner[b]))
+                                    {
+                                        if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                        {
+                                            string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                            if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                            {
+                                                Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                            }
+                                        }
+                                    }
+                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe"), b);
+                                }
+                                else if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"))
+                                {
+                                    if (!Directory.Exists(instOrdner[b]))
+                                    {
+                                        Directory.CreateDirectory(instOrdner[b]);
+                                    }
+                                    else if (Directory.Exists(instOrdner[b]))
+                                    {
+                                        if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                        {
+                                            string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                            if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                            {
+                                                Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                            }
+                                        }
+                                    }
+                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"), b);
+                                }
+                            }
+                            if (checkBox5.Checked)
+                            {
+                                if (!File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk"))
+                                {
+                                    NewMethod5(a, b);
+                                }
+                            }
+                            else if (File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk") && (instOrdner[b] == "Edge"))
+                            {
+                                NewMethod5(a, b);
+                            }
+                            if (!File.Exists(@instOrdner[b] + " Launcher.exe"))
+                            {
+                                File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
+                            }
+                            File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                            downloadLabel.Text = Langfile.Texts("downUnpfine");
+                        };
+                        try
                         {
                             var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
                             list.Add(task);
                         }
-                        if (args.Cancelled == true)
+                        catch (Exception ex)
                         {
-                            MessageBox.Show("Download has been canceled.");
+                            MessageBox.Show(ex.Message);
                         }
-                        else
-                        {
-                            downloadLabel.Text = Langfile.Texts("downUnpstart");
-                            string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
-                            Process process = new Process();
-                            process.StartInfo.FileName = @"Bin\7zr.exe";
-                            process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                            process.StartInfo.Arguments = arguments;
-                            process.Start();
-                            process.WaitForExit();
-                            process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[b] + " -y";
-                            process.Start();
-                            process.WaitForExit();
-                            if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
-                            {
-                                if (!Directory.Exists(instOrdner[b]))
-                                {
-                                    Directory.CreateDirectory(instOrdner[b]);
-                                }
-                                else if (Directory.Exists(instOrdner[b]))
-                                {
-                                    if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
-                                    {
-                                        string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
-                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
-                                        {
-                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
-                                        }
-                                    }
-                                }
-                                NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe"), b);
-                            }
-                            else if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"))
-                            {
-                                if (!Directory.Exists(instOrdner[b]))
-                                {
-                                    Directory.CreateDirectory(instOrdner[b]);
-                                }
-                                else if (Directory.Exists(instOrdner[b]))
-                                {
-                                    if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
-                                    {
-                                        string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
-                                        if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
-                                        {
-                                            Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
-                                        }
-                                    }
-                                }
-                                NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"), b);
-                            }
-                        }
-                        if (checkBox5.Checked)
-                        {
-                            if (!File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk"))
-                            {
-                                NewMethod5(a, b);
-                            }
-                        }
-                        else if (File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk") && (instOrdner[b] == "Edge"))
-                        {
-                            NewMethod5(a, b);
-                        }
-                        if (!File.Exists(@instOrdner[b] + " Launcher.exe"))
-                        {
-                            File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
-                        }
-                        File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
-                        downloadLabel.Text = Langfile.Texts("downUnpfine");
-                    };
-                    try
-                    {
-                        var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
-                        list.Add(task);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
                     }
                 }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show(ex.Message);
             }
             await Task.WhenAll(list);
             await Task.Delay(2000);
