@@ -29,7 +29,7 @@ namespace Edge_Updater
         {
             try
             {
-                for (int i = 0; i <= 3; i++)
+                /*for (int i = 0; i <= 3; i++)
                 {
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     string postData = "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\",}}";
@@ -51,18 +51,45 @@ namespace Edge_Updater
                         reader.Close();
                         dataStream.Close();
                     }
+                }*/
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.microsoftedgeinsider.com/api/versions");
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                    {
+                        string[] text = reader.ReadToEnd().ToString().Replace("{", "").Replace("}", "").Replace("\"", "").Split(new char[] { ',' });
+                        for (int j = 0; j < text.Length; j++)
+                        {
+                            if (text[j].Contains("canary:"))
+                            {
+                                buildversion[0] = text[j].Split(new char[] { ':' })[1];
+                                buildversion[4] = text[j].Split(new char[] { ':' })[1];
+                            }
+                            else if (text[j].Contains("dev:"))
+                            {
+                                buildversion[1] = text[j].Split(new char[] { ':' })[1];
+                                buildversion[5] = text[j].Split(new char[] { ':' })[1];
+                            }
+                            else if (text[j].Contains("beta:"))
+                            {
+                                buildversion[2] = text[j].Split(new char[] { ':' })[1];
+                                buildversion[6] = text[j].Split(new char[] { ':' })[1];
+                            }
+                            else if (text[j].Contains("stable:"))
+                            {
+                                buildversion[3] = text[j].Split(new char[] { ':' })[1];
+                                buildversion[7] = text[j].Split(new char[] { ':' })[1];
+                            }
+                        }
+                        reader.Close();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                if ((buildversion[0] == null) || (buildversion[1] == null) || (buildversion[2] == null) || (buildversion[3] == null))
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                else
-                {
-                    MessageBox.Show(ex.Message);
-                }
+                MessageBox.Show(ex.Message);
             }
             InitializeComponent();
             label2.Text = buildversion[0];
@@ -312,6 +339,7 @@ namespace Edge_Updater
             progressBox.Controls.Add(progressBarneu);
             Controls.Add(progressBox);
             List<Task> list = new List<Task>();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             WebRequest request = WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[a] + "-win-" + architektur[c] + "/versions/" + buildversion[a] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
             request.Method = "POST";
             string postData = "{}";
