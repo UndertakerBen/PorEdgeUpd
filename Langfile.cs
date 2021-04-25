@@ -52,7 +52,7 @@ namespace Edge_Updater
                             return "отде́льно";
                         case "VInfo":
                             return "О версиях";
-						case "Policy":
+                        case "Policy":
                             return "Скачать шаблоны политик";
                         case "NoVersion":
                             return "Информация о версии не найдена:\n\rПроверьте подключение к Интернету и повторите попытку.";
@@ -101,7 +101,7 @@ namespace Edge_Updater
                             return "Extras";
                         case "VInfo":
                             return "Versions Info";
-						case "Policy":
+                        case "Policy":
                             return "Richtlinienvorlagen herunterladen";
                         case "NoVersion":
                             return "Keine Versionsinfo gefunden:\n\rBitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut.";
@@ -150,7 +150,7 @@ namespace Edge_Updater
                             return "Extras";
                         case "VInfo":
                             return "Version Info";
-						case "Policy":
+                        case "Policy":
                             return "Policy Templates download";
                         case "NoVersion":
                             return "No version info found:\n\rPlease check your internet connection and try it again.";
