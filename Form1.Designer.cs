@@ -87,6 +87,7 @@ namespace Edge_Updater
             this.registrierenToolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
             this.enfernenToolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.versionsInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.policyTemplatesDownloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();																							 
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -394,7 +395,8 @@ namespace Edge_Updater
             this.menuStrip1.BackColor = System.Drawing.Color.Silver;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extrasToolStripMenuItem,
-            this.versionsInfoToolStripMenuItem});
+			this.policyTemplatesDownloadToolStripMenuItem,
+            this.versionsInfoToolStripMenuItem});	
             this.menuStrip1.Location = new System.Drawing.Point(5, 5);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(370, 24);
@@ -645,6 +647,14 @@ namespace Edge_Updater
             this.versionsInfoToolStripMenuItem.Text = Langfile.Texts("VInfo");
             this.versionsInfoToolStripMenuItem.Click += new System.EventHandler(this.VersionsInfoToolStripMenuItem_Click);
             // 
+			// policyTemplatesDownloadToolStripMenuItem
+            // 
+            this.policyTemplatesDownloadToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.policyTemplatesDownloadToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.policyTemplatesDownloadToolStripMenuItem.Name = "policyTemplatesDownloadToolStripMenuItem";
+            this.policyTemplatesDownloadToolStripMenuItem.Size = new System.Drawing.Size(168, 20);
+            this.policyTemplatesDownloadToolStripMenuItem.Text = Langfile.Texts("Policy");
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -733,6 +743,7 @@ namespace Edge_Updater
         private System.Windows.Forms.ToolStripMenuItem enfernenToolStripMenuItem5;
         private System.Windows.Forms.ToolStripMenuItem registrierenToolStripMenuItem7;
         private System.Windows.Forms.ToolStripMenuItem enfernenToolStripMenuItem6;
+		private System.Windows.Forms.ToolStripMenuItem policyTemplatesDownloadToolStripMenuItem;																						
     }
 }
 

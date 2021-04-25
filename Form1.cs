@@ -25,33 +25,14 @@ namespace Edge_Updater
         private readonly string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         private readonly string applicationPath = Application.StartupPath;
         private readonly ToolTip toolTip = new ToolTip();
+
+        public object MenuBar { get; }
+
         public Form1()
         {
             try
             {
-                /*for (int i = 0; i <= 3; i++)
-                {
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    string postData = "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\",}}";
-                    byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-{ring[i].ToLower()}-win-x64/versions/latest?action=select");
-                    request.Method = "POST";
-                    request.UserAgent = "Microsoft Edge Update/1.3.129.35;winhttp";
-                    request.ContentType = "application/json";
-                    request.ContentLength = byteArray.Length;
-                    Stream dataStream = request.GetRequestStream();
-                    dataStream.Write(byteArray, 0, byteArray.Length);
-                    using (dataStream = request.GetResponse().GetResponseStream())
-                    {
-                        StreamReader reader = new StreamReader(dataStream);
-                        string responseFromServer = reader.ReadToEnd();
-                        string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("Version\":\"")).Split(new char[] { '"' });
-                        buildversion[i] = URL[2];
-                        buildversion[i + 4] = URL[2];
-                        reader.Close();
-                        dataStream.Close();
-                    }
-                }*/
+               
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.microsoftedgeinsider.com/api/versions");
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
@@ -92,6 +73,42 @@ namespace Edge_Updater
                 MessageBox.Show(ex.Message);
             }
             InitializeComponent();
+
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create("https://www.microsoft.com/en-us/edge/business/download");
+            HttpWebResponse response2 = (HttpWebResponse)request2.GetResponse();
+            if (response2.StatusCode == HttpStatusCode.OK)
+            {
+                using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
+                {
+                    var text = reader.ReadToEnd().ToString();
+
+                    string[] test = text.Substring(text.IndexOf("{&quot;Product&quot;:&quot;Policy")).Replace("{&quot;Product&quot;:&quot;Policy", "|{&quot;Product&quot;:&quot;Policy").Replace("&quot;", "\"").ToString().Split(new char[] { '|', '>' }, 3);
+                    string[] test2 = test[1].Replace("{\"ReleaseId", "|{\"ReleaseId").Split(new char[] { '|' });
+                    for (int i = 0; i < test2.GetLength(0); i++)
+                    {
+                        if (test2[i].Contains("ProductVersion"))
+                        {
+                            for (int j = 0; j < 4; j++)
+                            {
+                                if (test2[i].Contains(buildversion[j]))
+                                {
+                                    string test3 = test2[i].Substring(test2[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                    string test4 = test2[i].Substring(test2[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
+                                    var tb = policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(test3);
+                                    tb.Font = new Font("Segoe UI", 9F);
+                                    tb.Click += new EventHandler(Download_Click);
+                                    async void Download_Click(object sender, EventArgs e)
+                                    {
+                                        await DownloadADMX(test4, test3);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    reader.Close();
+                }
+            }
             label2.Text = buildversion[0];
             label4.Text = buildversion[1];
             label6.Text = buildversion[2];
@@ -343,7 +360,8 @@ namespace Edge_Updater
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[a] + "-win-" + architektur[c] + "/versions/" + buildversion[a] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
-                request.UserAgent = "Microsoft Edge Update/ 1.3.139.59; winhttp";
+                request.Host = "msedge.api.cdp.microsoft.com";
+                request.UserAgent = "Microsoft Edge Update/1.3.139.59;winhttp";
                 request.Method = "POST";
                 string postData = "{}";
                 byte[] byteArray = Encoding.UTF8.GetBytes(postData);
@@ -465,7 +483,7 @@ namespace Edge_Updater
                     }
                 }
             }
-            catch (WebException ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
@@ -1271,6 +1289,96 @@ namespace Edge_Updater
             {
                 
             }
+        }
+        public async Task DownloadADMX(string URL, string version)
+        {
+            GroupBox progressBox = new GroupBox
+            {
+                Location = new Point(groupBox3.Location.X, button10.Location.Y + button10.Size.Height + 5),
+                Size = new Size(groupBox3.Width, 90),
+                BackColor = Color.Lavender,
+            };
+            Label title = new Label
+            {
+                AutoSize = false,
+                Location = new Point(5, 10),
+                Size = new Size(progressBox.Size.Width - 10, 25),
+                Text = "(" + version + ")MicrosoftEdgePolicyTemplates.zip",
+                TextAlign = ContentAlignment.BottomCenter
+            };
+            title.Font = new Font(title.Font.Name, 9.25F, FontStyle.Bold);
+            Label downloadLabel = new Label
+            {
+                AutoSize = false,
+                Location = new Point(8, 35),
+                Size = new Size(200, 25),
+                TextAlign = ContentAlignment.BottomLeft
+            };
+            Label percLabel = new Label
+            {
+                AutoSize = false,
+                Location = new Point(progressBox.Size.Width - 108, 35),
+                Size = new Size(100, 25),
+                TextAlign = ContentAlignment.BottomRight
+            };
+            ProgressBar progressBarneu = new ProgressBar
+            {
+                Location = new Point(8, 65),
+                Size = new Size(progressBox.Size.Width - 18, 7)
+            };
+            progressBox.Controls.Add(title);
+            progressBox.Controls.Add(downloadLabel);
+            progressBox.Controls.Add(percLabel);
+            progressBox.Controls.Add(progressBarneu);
+            Controls.Add(progressBox);
+            List<Task> list = new List<Task>();
+            try
+            {
+                    WebClient myWebClient = new WebClient();
+                    Uri uri = new Uri(URL);
+                using (webClient = new WebClient())
+                {
+                    webClient.DownloadProgressChanged += (o, args) =>
+                    {
+                        progressBarneu.Value = args.ProgressPercentage;
+                        downloadLabel.Text = $"{args.BytesReceived / 1024d / 1024d:0.00} MB's / {args.TotalBytesToReceive / 1024d / 1024d:0.00} MB's";
+                        percLabel.Text = $"{args.ProgressPercentage}%";
+                    };
+                    webClient.DownloadFileCompleted += (o, args) =>
+                    {
+                        if (args.Error != null)
+                        {
+                            var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates.zip");
+                            list.Add(task);
+                        }
+                        if (args.Cancelled == true)
+                        {
+                            MessageBox.Show("Download has been canceled.");
+                        }
+                    };
+                    try
+                    {
+                        if (!Directory.Exists(applicationPath + "\\ADMX Policy Templates"))
+                        {
+                            Directory.CreateDirectory(applicationPath + "\\ADMX Policy Templates");
+                        }
+                        var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates.zip");
+                        list.Add(task);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            await Task.WhenAll(list);
+            await Task.Delay(2000);
+            Controls.Remove(progressBox);
         }
     }
 }
