@@ -73,41 +73,45 @@ namespace Edge_Updater
                 MessageBox.Show(ex.Message);
             }
             InitializeComponent();
-
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create("https://www.microsoft.com/en-us/edge/business/download");
-            HttpWebResponse response2 = (HttpWebResponse)request2.GetResponse();
-            if (response2.StatusCode == HttpStatusCode.OK)
+            try
             {
-                using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create("https://www.microsoft.com/en-us/edge/business/download");
+                HttpWebResponse response2 = (HttpWebResponse)request2.GetResponse();
+                if (response2.StatusCode == HttpStatusCode.OK)
                 {
-                    var text = reader.ReadToEnd().ToString();
-
-                    string[] test = text.Substring(text.IndexOf("{&quot;Product&quot;:&quot;Policy")).Replace("{&quot;Product&quot;:&quot;Policy", "|{&quot;Product&quot;:&quot;Policy").Replace("&quot;", "\"").ToString().Split(new char[] { '|', '>' }, 3);
-                    string[] test2 = test[1].Replace("{\"ReleaseId", "|{\"ReleaseId").Split(new char[] { '|' });
-                    for (int i = 0; i < test2.GetLength(0); i++)
+                    using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
                     {
-                        if (test2[i].Contains("ProductVersion"))
+                        var text = reader.ReadToEnd().ToString();
+                        string[] splittext = text.Substring(text.IndexOf("{&quot;Product&quot;:&quot;Policy")).Replace("{&quot;Product&quot;:&quot;Policy", "|{&quot;Product&quot;:&quot;Policy").Replace("&quot;", "\"").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("{\"ReleaseId", "|{\"ReleaseId").Split(new char[] { '|' });
+                        for (int i = 0; i < splittext.GetLength(0); i++)
                         {
-                            for (int j = 0; j < 4; j++)
+                            if (splittext[i].Contains("ProductVersion"))
                             {
-                                if (test2[i].Contains(buildversion[j]))
+                                for (int j = 0; j < 4; j++)
                                 {
-                                    string test3 = test2[i].Substring(test2[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
-                                    string test4 = test2[i].Substring(test2[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
-                                    var tb = policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(test3);
-                                    tb.Font = new Font("Segoe UI", 9F);
-                                    tb.Click += new EventHandler(Download_Click);
-                                    async void Download_Click(object sender, EventArgs e)
+                                    if (splittext[i].Contains(buildversion[j]))
                                     {
-                                        await DownloadADMX(test4, test3);
+                                        string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                        string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
+                                        var tb = policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(productVersion);
+                                        tb.Font = new Font("Segoe UI", 9F);
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion);
+                                        }
                                     }
                                 }
                             }
                         }
+                        reader.Close();
                     }
-                    reader.Close();
                 }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Template\r\n" + ex.Message);
             }
             label2.Text = buildversion[0];
             label4.Text = buildversion[1];
