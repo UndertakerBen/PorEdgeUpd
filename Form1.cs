@@ -88,10 +88,10 @@ namespace Edge_Updater
                         {
                             if (splittext[i].Contains("ProductVersion"))
                             {
-                                for (int j = 0; j < 4; j++)
+                                /*for (int j = 0; j < 4; j++)
                                 {
                                     if (splittext[i].Contains(buildversion[j]))
-                                    {
+                                    {*/
                                         string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
                                         string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
                                         var tb = policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(productVersion);
@@ -101,8 +101,8 @@ namespace Edge_Updater
                                         {
                                             await DownloadADMX(productURL, productVersion);
                                         }
-                                    }
-                                }
+                                    /*}
+                                }*/
                             }
                         }
                         reader.Close();
