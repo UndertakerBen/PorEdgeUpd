@@ -25,8 +25,9 @@ namespace Edge_Updater
         private readonly string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         private readonly string applicationPath = Application.StartupPath;
         private readonly ToolTip toolTip = new ToolTip();
-
-        public object MenuBar { get; }
+        readonly string puups2;
+        readonly ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
+        readonly ToolStripMenuItem puups = new ToolStripMenuItem();
 
         public Form1()
         {
@@ -88,21 +89,33 @@ namespace Edge_Updater
                         {
                             if (splittext[i].Contains("ProductVersion"))
                             {
-                                /*for (int j = 0; j < 4; j++)
+                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
+                                if (puups2 != productVShort)
                                 {
-                                    if (splittext[i].Contains(buildversion[j]))
-                                    {*/
-                                        string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
-                                        string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
-                                        var tb = policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(productVersion);
-                                        tb.Font = new Font("Segoe UI", 9F);
-                                        tb.Click += new EventHandler(Download_Click);
-                                        async void Download_Click(object sender, EventArgs e)
-                                        {
-                                            await DownloadADMX(productURL, productVersion);
-                                        }
-                                    /*}
-                                }*/
+                                    puups = new ToolStripMenuItem(productVShort);
+                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(puups);
+                                    var tb = puups.DropDownItems.Add(productVersion);
+                                    puups.Font = new Font("Segoe UI", 9F);
+                                    tb.Click += new EventHandler(Download_Click);
+                                    async void Download_Click(object sender, EventArgs e)
+                                    {
+                                        await DownloadADMX(productURL, productVersion);
+                                    }
+
+                                }
+                                else if (puups2 == productVShort)
+                                {
+                                    var tb2 = puups.DropDownItems.Add(productVersion);
+                                    tb2.Click += new EventHandler(Download2_Click);
+                                    async void Download2_Click(object sender, EventArgs e)
+                                    {
+                                        await DownloadADMX(productURL, productVersion);
+                                    }
+                                }
+                                puups2 = productVShort;
+                                
                             }
                         }
                         reader.Close();
