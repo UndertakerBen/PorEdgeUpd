@@ -95,9 +95,10 @@ namespace Edge_Updater
                                 if (policyVMenu != productVShort)
                                 {
                                     SubPVMenu = new ToolStripMenuItem(productVShort);
+                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
                                     policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
                                     var tb = SubPVMenu.DropDownItems.Add(productVersion);
-                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                    tb.ToolTipText = productURL;
                                     tb.Click += new EventHandler(Download_Click);
                                     async void Download_Click(object sender, EventArgs e)
                                     {
@@ -108,6 +109,7 @@ namespace Edge_Updater
                                 else if (policyVMenu == productVShort)
                                 {
                                     var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                    tb2.ToolTipText = productURL;
                                     tb2.Click += new EventHandler(Download2_Click);
                                     async void Download2_Click(object sender, EventArgs e)
                                     {
