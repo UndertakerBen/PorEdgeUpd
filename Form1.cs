@@ -28,7 +28,6 @@ namespace Edge_Updater
         readonly string policyVMenu;
         readonly ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
         readonly ToolStripMenuItem SubPVMenu = new ToolStripMenuItem();
-        private readonly string[] CommandLineArgs = Environment.GetCommandLineArgs();
 
         public Form1()
         {
@@ -117,22 +116,21 @@ namespace Edge_Updater
                                 string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
                                 if (policyVMenu != productVShort)
                                 {
-                                    SubPVMenu = new ToolStripMenuItem(productVShort)
-                                    {
-                                        Font = new Font("Segoe UI", 9F)
-                                    };
+                                    SubPVMenu = new ToolStripMenuItem(productVShort);
+                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
                                     policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
-                                    ToolStripItem tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
                                     tb.ToolTipText = productURL;
                                     tb.Click += new EventHandler(Download_Click);
                                     async void Download_Click(object sender, EventArgs e)
                                     {
                                         await DownloadADMX(productURL, productVersion);
                                     }
+
                                 }
                                 else if (policyVMenu == productVShort)
                                 {
-                                    ToolStripItem tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
                                     tb2.ToolTipText = productURL;
                                     tb2.Click += new EventHandler(Download2_Click);
                                     async void Download2_Click(object sender, EventArgs e)
@@ -141,6 +139,7 @@ namespace Edge_Updater
                                     }
                                 }
                                 policyVMenu = productVShort;
+                                
                             }
                         }
                         reader.Close();
@@ -169,15 +168,15 @@ namespace Edge_Updater
             }
             if (IntPtr.Size == 8)
             {
-                if (File.Exists($"{applicationPath}\\Edge Canary x64\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Dev x64\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Beta x64\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Stable x64\\msedge.exe"))
+                if (File.Exists(@"Edge Canary x64\msedge.exe") || File.Exists(@"Edge Dev x64\msedge.exe") || File.Exists(@"Edge Beta x64\msedge.exe") || File.Exists(@"Edge Stable x64\msedge.exe"))
                 {
                     checkBox3.Enabled = false;
                 }
-                if (File.Exists(applicationPath + "\\Edge Canary x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Dev x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Beta x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Stable x86\\msedge.exe"))
+                if (File.Exists(@"Edge Canary x86\msedge.exe") || File.Exists(@"Edge Dev x86\msedge.exe") || File.Exists(@"Edge Beta x86\msedge.exe") || File.Exists(@"Edge Stable x86\msedge.exe"))
                 {
                     checkBox2.Enabled = false;
                 }
-                if (File.Exists($"{applicationPath}\\Edge Canary x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Dev x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Beta x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Stable x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Canary x64\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Dev x64\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Beta x64\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Stable x64\\msedge.exe"))
+                if (File.Exists(@"Edge Canary x86\msedge.exe") || File.Exists(@"Edge Dev x86\msedge.exe") || File.Exists(@"Edge Beta x86\msedge.exe") || File.Exists(@"Edge Stable x86\msedge.exe") || File.Exists(@"Edge Canary x64\msedge.exe") || File.Exists(@"Edge Dev x64\msedge.exe") || File.Exists(@"Edge Beta x64\msedge.exe") || File.Exists(@"Edge Stable x64\msedge.exe"))
                 {
                     checkBox1.Checked = true;
                     CheckButton();
@@ -188,7 +187,7 @@ namespace Edge_Updater
                     checkBox3.Enabled = false;
                     button9.Enabled = false;
                     button9.BackColor = Color.FromArgb(244, 244, 244);
-                    if (File.Exists($"{applicationPath}\\Edge\\msedge.exe"))
+                    if (File.Exists(@"Edge\msedge.exe"))
                     {
                         CheckButton2();
                     }
@@ -196,7 +195,7 @@ namespace Edge_Updater
             }
             if (IntPtr.Size != 8)
             {
-                if (File.Exists(applicationPath + "\\Edge Canary x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Dev x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Beta x86\\msedge.exe") || File.Exists($"{applicationPath}\\Edge Stable x86\\msedge.exe"))
+                if (File.Exists(@"Edge Canary x86\msedge.exe") || File.Exists(@"Edge Dev x86\msedge.exe") || File.Exists(@"Edge Beta x86\msedge.exe") || File.Exists(@"Edge Stable x86\msedge.exe"))
                 {
                     checkBox1.Checked = true;
                     checkBox2.Enabled = false;
@@ -207,12 +206,13 @@ namespace Edge_Updater
                     checkBox2.Enabled = false;
                     button9.Enabled = false;
                     button9.BackColor = Color.FromArgb(244, 244, 244);
-                    if (File.Exists($"{applicationPath}\\Edge\\msedge.exe"))
+                    if (File.Exists(@"Edge\msedge.exe"))
                     {
                         CheckButton2();
                     }
                 }
             }
+            CheckUpdate();
             if ((buildversion[0] == null) || (buildversion[1] == null) || (buildversion[2] == null) || (buildversion[3] == null))
             {
                 groupBox3.Enabled = false;
@@ -224,20 +224,6 @@ namespace Edge_Updater
                 if (proc.ProcessName.Equals("msedge"))
                 {
                     MessageBox.Show(Langfile.Texts("MeassageRunning"), "Portable Edge (Chromium) Updater", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
-            }
-            Task task = TestCheck();
-        }
-        private async Task TestCheck()
-        {
-            await CheckUpdate();
-            for (int i = 0; i < CommandLineArgs.GetLength(0); i++)
-            {
-                if (CommandLineArgs[i].ToLower().Equals("-updateall"))
-                {
-                    await UpdateAll();
-                    await Task.Delay(2000);
-                    Application.Exit();
                 }
             }
         }
@@ -335,7 +321,7 @@ namespace Edge_Updater
         }
         private async Task Testing()
         {
-            if ((!Directory.Exists($"{applicationPath}\\Edge Canary x86")) && (!Directory.Exists($"{applicationPath}\\Edge Dev x86")) && (!Directory.Exists($"{applicationPath}\\Edge Beta x86")) && (!Directory.Exists($"{applicationPath}\\Edge Stable x86")))
+            if ((!Directory.Exists(@"Edge Canary x86")) && (!Directory.Exists(@"Edge Dev x86")) && (!Directory.Exists(@"Edge Beta x86")) && (!Directory.Exists(@"Edge Stable x86")))
             {
                 if (checkBox2.Checked)
                 {
@@ -346,14 +332,13 @@ namespace Edge_Updater
                     checkBox2.Enabled = false;
                 }
             }
-            File.AppendAllText(applicationPath + "\\test.txt", "Check x86 ALL\r\n");
             await NewMethod2(0, 0, 0, 1);
             await NewMethod2(1, 1, 0, 2);
             await NewMethod2(2, 2, 0, 3);
             await NewMethod2(3, 3, 0, 4);
             if (IntPtr.Size == 8)
             {
-                if ((!Directory.Exists($"{applicationPath}\\Edge Canary x64")) && (!Directory.Exists($"{applicationPath}\\Edge Dev x64")) && (!Directory.Exists($"{applicationPath}\\Edge Beta x64")) && (!Directory.Exists($"{applicationPath}\\Edge Stable x64")))
+                if ((!Directory.Exists(@"Edge Canary x64")) && (!Directory.Exists(@"Edge Dev x64")) && (!Directory.Exists(@"Edge Beta x64")) && (!Directory.Exists(@"Edge Stable x64")))
                 {
                     if (checkBox3.Checked)
                     {
@@ -370,74 +355,6 @@ namespace Edge_Updater
                 await NewMethod2(3, 7, 1, 8);
             }
         }
-        private async Task UpdateAll()
-        {
-            if (Directory.Exists($"{applicationPath}\\Edge"))
-            {
-                if (File.Exists($"{applicationPath}\\Edge\\updates\\Version.log"))
-                {
-                    string[] instVersion = File.ReadAllText($"{applicationPath}\\Edge\\updates\\Version.log").Split(new char[] { '|' });
-                    if (instVersion[1] == "Canary" & instVersion[2] == "x86")
-                    {
-                        if (new Version(buildversion[0]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(0, 0, 1);
-                        }
-                    }
-                    if (instVersion[1] == "Canary" & instVersion[2] == "x64")
-                    {
-                        if (new Version(buildversion[0]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(0, 1, 5);
-                        }
-                    }
-                    if (instVersion[1] == "Developer" & instVersion[2] == "x86")
-                    {
-                        if (new Version(buildversion[1]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(1, 0, 2);
-                        }
-                    }
-                    if (instVersion[1] == "Developer" & instVersion[2] == "x64")
-                    {
-                        if (new Version(buildversion[1]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(1, 1, 6);
-                        }
-                    }
-                    if (instVersion[1] == "Beta" & instVersion[2] == "x86")
-                    {
-                        if (new Version(buildversion[2]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(2, 0, 3);
-                        }
-                    }
-                    if (instVersion[1] == "Beta" & instVersion[2] == "x64")
-                    {
-                        if (new Version(buildversion[2]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(2, 1, 7);
-                        }
-                    }
-                    if (instVersion[1] == "Stable" & instVersion[2] == "x86")
-                    {
-                        if (new Version(buildversion[3]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(3, 0, 4);
-                        }
-                    }
-                    if (instVersion[1] == "Stable" & instVersion[2] == "x64")
-                    {
-                        if (new Version(buildversion[3]) > new Version(instVersion[0]))
-                        {
-                            await NewMethod1(3, 1, 8);
-                        }
-                    }
-                }
-            }
-            await Testing();
-            await Task.WhenAll();
-        }
         public async Task DownloadFile(int a, int b, int c, int d)
         {
             GroupBox progressBox = new GroupBox
@@ -451,7 +368,7 @@ namespace Edge_Updater
                 AutoSize = false,
                 Location = new Point(5, 10),
                 Size = new Size(progressBox.Size.Width-10, 25),
-                Text = $"Edge Chromium {ring2[a]} {buildversion[a]} {architektur2[c]}",
+                Text = "Edge Chromium " + ring2[a] + " " + buildversion[a] + " " + architektur2[c],
                 TextAlign = ContentAlignment.BottomCenter
             };
             title.Font = new Font(title.Font.Name, 9.25F, FontStyle.Bold);
@@ -483,7 +400,7 @@ namespace Edge_Updater
             try
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-{ring[a]}-win-{architektur[c]}/versions/{buildversion[a]}/files?action=GenerateDownloadInfo&foregroundPriority=true");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring[a] + "-win-" + architektur[c] + "/versions/" + buildversion[a] + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
                 request.Host = "msedge.api.cdp.microsoft.com";
                 request.UserAgent = "Microsoft Edge Update/1.3.139.59;winhttp";
                 request.Method = "POST";
@@ -497,7 +414,7 @@ namespace Edge_Updater
                 using (dataStream = request.GetResponse().GetResponseStream())
                 {
                     string responseFromServer = new StreamReader(dataStream).ReadToEnd();
-                    string[] URL = responseFromServer.Substring(responseFromServer.IndexOf($"MicrosoftEdge_{architektur[c]}_{buildversion[a]}.exe")).Split(new char[] { '"' });
+                    string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + ".exe")).Split(new char[] { '"' });
                     WebClient myWebClient = new WebClient();
                     Uri uri = new Uri(URL[4]);
                     using (webClient = new WebClient())
@@ -518,7 +435,7 @@ namespace Edge_Updater
                         {
                             if (args.Error != null)
                             {
-                                var task = webClient.DownloadFileTaskAsync(uri, $"{applicationPath}\\MicrosoftEdge_{architektur[c]}_{buildversion[a]}_{ring[a]}.exe");
+                                var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
                                 list.Add(task);
                             }
                             if (args.Cancelled == true)
@@ -528,76 +445,76 @@ namespace Edge_Updater
                             else
                             {
                                 downloadLabel.Text = Langfile.Texts("downUnpstart");
-                                string arguments = $" x \"{applicationPath}\\MicrosoftEdge_{architektur[c]}_{buildversion[a]}_{ring[a]}.exe\" -o\"{applicationPath}\\Update\\{entpDir[b]}\" -y";
+                                string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
                                 Process process = new Process();
-                                process.StartInfo.FileName = $"\"{applicationPath}\\Bin\\7zr.exe\"";
+                                process.StartInfo.FileName = @"Bin\7zr.exe";
                                 process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
                                 process.StartInfo.Arguments = arguments;
                                 process.Start();
                                 process.WaitForExit();
-                                process.StartInfo.Arguments = $" x \"{applicationPath}\\Update\\{entpDir[b]}\\MSEDGE.7z\" -o\"{applicationPath}\\Update\\{entpDir[b]}\" -y";
+                                process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[b] + " -y";
                                 process.Start();
                                 process.WaitForExit();
-                                if (File.Exists($"{applicationPath}\\Update\\{entpDir[b]}\\Chrome-bin\\msedge.exe"))
+                                if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
                                 {
-                                    if (!Directory.Exists($"{applicationPath}\\{instOrdner[b]}"))
+                                    if (!Directory.Exists(instOrdner[b]))
                                     {
-                                        Directory.CreateDirectory($"{applicationPath}\\{instOrdner[b]}");
+                                        Directory.CreateDirectory(instOrdner[b]);
                                     }
-                                    else if (Directory.Exists($"{applicationPath}\\{instOrdner[b]}"))
+                                    else if (Directory.Exists(instOrdner[b]))
                                     {
-                                        if (File.Exists($"{applicationPath}\\{instOrdner[b]}\\msedge.exe") && File.Exists(applicationPath + "\\" + instOrdner[b] + "\\updates\\version.log"))
+                                        if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
                                         {
-                                            string[] instVersion = File.ReadAllText($"{applicationPath}\\{instOrdner[b]}\\updates\\Version.log").Split(new char[] { '|' });
-                                            if (Directory.Exists($"{applicationPath}\\{instOrdner[b]}\\{instVersion[0]}"))
+                                            string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                            if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
                                             {
-                                                Directory.Delete($"{applicationPath}\\{instOrdner[b]}\\{instVersion[0]}", true);
+                                                Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
                                             }
                                         }
                                     }
-                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo($"{applicationPath}\\Update\\{entpDir[b]}\\chrome-bin\\msedge.exe"), b);
+                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe"), b);
                                 }
-                                else if (File.Exists($"{applicationPath}\\Update\\{entpDir[b]}\\chrome-bin\\{buildversion[a]}\\msedge.exe"))
+                                else if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"))
                                 {
-                                    if (!Directory.Exists($"{applicationPath}\\{instOrdner[b]}"))
+                                    if (!Directory.Exists(instOrdner[b]))
                                     {
-                                        Directory.CreateDirectory($"{applicationPath}\\{instOrdner[b]}");
+                                        Directory.CreateDirectory(instOrdner[b]);
                                     }
-                                    else if (Directory.Exists($"{applicationPath}\\{instOrdner[b]}"))
+                                    else if (Directory.Exists(instOrdner[b]))
                                     {
-                                        if (File.Exists($"{applicationPath}\\{instOrdner[b]}\\msedge.exe") && File.Exists(applicationPath + "\\" + instOrdner[b] + "\\updates\\version.log"))
+                                        if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
                                         {
-                                            string[] instVersion = File.ReadAllText($"{applicationPath}\\{instOrdner[b]}\\updates\\Version.log").Split(new char[] { '|' });
-                                            if (Directory.Exists($"{applicationPath}\\{instOrdner[b]}\\{instVersion[0]}"))
+                                            string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                            if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
                                             {
-                                                Directory.Delete($"{applicationPath}\\{instOrdner[b]}\\{instVersion[0]}", true);
+                                                Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
                                             }
                                         }
                                     }
-                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo($"{applicationPath}\\Update\\{entpDir[b]}\\chrome-bin\\{buildversion[a]}\\msedge.exe"), b);
+                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"), b);
                                 }
                             }
                             if (checkBox5.Checked)
                             {
-                                if (!File.Exists($"{deskDir}\\{instOrdner[b]}.lnk"))
+                                if (!File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk"))
                                 {
                                     NewMethod5(a, b);
                                 }
                             }
-                            else if (File.Exists($"{deskDir}\\{instOrdner[b]}.lnk") && (instOrdner[b] == "Edge"))
+                            else if (File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk") && (instOrdner[b] == "Edge"))
                             {
                                 NewMethod5(a, b);
                             }
-                            if (!File.Exists($"{applicationPath}\\{instOrdner[b]} Launcher.exe"))
+                            if (!File.Exists(@instOrdner[b] + " Launcher.exe"))
                             {
-                                File.Copy($"{applicationPath}\\Bin\\Launcher\\{instOrdner[b]} Launcher.exe", $"{applicationPath}\\{instOrdner[b]} Launcher.exe");
+                                File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
                             }
-                            File.Delete($"{applicationPath}\\MicrosoftEdge_{architektur[c]}_{buildversion[a]}_{ring[a]}.exe");
+                            File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
                             downloadLabel.Text = Langfile.Texts("downUnpfine");
                         };
                         try
                         {
-                            var task = webClient.DownloadFileTaskAsync(uri, $"{applicationPath}\\MicrosoftEdge_{architektur[c]}_{buildversion[a]}_{ring[a]}.exe");
+                            var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
                             list.Add(task);
                         }
                         catch (Exception ex)
@@ -620,10 +537,10 @@ namespace Edge_Updater
             NewMethod3();
             for (int i = 0; i <= 7; i++)
             {
-                if (File.Exists($"{applicationPath}\\{instOrdner[i]}\\updates\\Version.log"))
+                if (File.Exists(@instOrdner[i] + "\\updates\\Version.log"))
                 {
                     Control[] buttons = Controls.Find("button" + (i + 1), true);
-                    string[] instVersion = File.ReadAllText($"{applicationPath}\\{instOrdner[i]}\\updates\\Version.log").Split(new char[] { '|' });
+                    string[] instVersion = File.ReadAllText(@instOrdner[i] + "\\updates\\Version.log").Split(new char[] { '|' });
                     if (buildversion[i] == instVersion[0])
                     {
                         if (buttons.Length > 0)
@@ -650,8 +567,8 @@ namespace Edge_Updater
         {
             if (checkBox1.Checked)
             {
-                checkBox3.Enabled = !File.Exists($"{applicationPath}\\Edge Canary x64\\msedge.exe") && !File.Exists($"{applicationPath}\\Edge Dev x64\\msedge.exe") && !File.Exists($"{applicationPath}\\Edge Beta x64\\msedge.exe") && !File.Exists($"{applicationPath}\\Edge Stable x64\\msedge.exe");
-                checkBox2.Enabled = !File.Exists($"{applicationPath}\\Edge Canary x86\\msedge.exe") && !File.Exists($"{applicationPath}\\Edge Dev x86\\msedge.exe") && !File.Exists($"{applicationPath}\\Edge Beta x86\\msedge.exe") && !File.Exists($"{applicationPath}\\Edge Stable x86\\msedge.exe");
+                checkBox3.Enabled = !File.Exists(@"Edge Canary x64\msedge.exe") && !File.Exists(@"Edge Dev x64\msedge.exe") && !File.Exists(@"Edge Beta x64\msedge.exe") && !File.Exists(@"Edge Stable x64\msedge.exe");
+                checkBox2.Enabled = !File.Exists(@"Edge Canary x86\msedge.exe") && !File.Exists(@"Edge Dev x86\msedge.exe") && !File.Exists(@"Edge Beta x86\msedge.exe") && !File.Exists(@"Edge Stable x86\msedge.exe");
                 if (button9.Enabled)
                 {
                     button9.BackColor = Color.FromArgb(224, 224, 224);
@@ -670,9 +587,9 @@ namespace Edge_Updater
         public void CheckButton2()
         {
             NewMethod3();
-            if (File.Exists($"{applicationPath}\\Edge\\updates\\Version.log"))
+            if (File.Exists(@"Edge\updates\Version.log"))
             {
-                string[] instVersion = File.ReadAllText($"{applicationPath}\\Edge\\updates\\Version.log").Split(new char[] { '|' });
+                string[] instVersion = File.ReadAllText(@"Edge\updates\Version.log").Split(new char[] { '|' });
                 switch (instVersion[1])
                 {
                     case "Canary":
@@ -758,9 +675,9 @@ namespace Edge_Updater
         }
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            if (Directory.Exists($"{applicationPath}\\Update"))
+            if (Directory.Exists(@"Update"))
             {
-                Directory.Delete($"{applicationPath}\\Update", true);
+                Directory.Delete(@"Update", true);
             }
         }
         private void Button9_EnabledChanged(object sender, EventArgs e)
@@ -772,9 +689,9 @@ namespace Edge_Updater
         }
         private async Task NewMethod(int a, int b, int c, int d)
         {
-            if (File.Exists($"{applicationPath}\\{instOrdner[b]}\\updates\\Version.log"))
+            if (File.Exists(@instOrdner[b] + "\\updates\\Version.log"))
             {
-                if (File.ReadAllText($"{applicationPath}\\{instOrdner[b]}\\updates\\Version.log").Split(new char[] { '|' })[0] == buildversion[a])
+                if (File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' })[0] == buildversion[a])
                 {
                     if (checkBox4.Checked)
                     {
@@ -797,9 +714,9 @@ namespace Edge_Updater
         }
         private async Task NewMethod1(int a, int b, int c)
         {
-            if (File.Exists($"{applicationPath}\\Edge\\updates\\Version.log"))
+            if (File.Exists(@"Edge\updates\Version.log"))
             {
-                string[] instVersion = File.ReadAllText($"{applicationPath}\\Edge\\updates\\Version.log").Split(new char[] { '|' });
+                string[] instVersion = File.ReadAllText(@"Edge\updates\Version.log").Split(new char[] { '|' });
                 if ((instVersion[0] == buildversion[a]) && (instVersion[1] == ring2[a]) && (instVersion[2] == architektur2[b]))
                 {
                     if (checkBox4.Checked)
@@ -823,11 +740,11 @@ namespace Edge_Updater
         }
         private async Task NewMethod2(int a, int b, int c, int d)
         {
-            if (Directory.Exists($"{applicationPath}\\{instOrdner[b]}"))
+            if (Directory.Exists(instOrdner[b]))
             {
-                if (File.Exists($"{applicationPath}\\{instOrdner[b]}\\updates\\Version.log"))
+                if (File.Exists(instOrdner[b] + "\\updates\\Version.log"))
                 {
-                    if (File.ReadAllText($"{applicationPath}\\{instOrdner[b]}\\updates\\Version.log").Split(new char[] { '|' })[0] != buildversion[a])
+                    if (File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' })[0] != buildversion[a])
                     {
                         await DownloadFile(a, b, c, d);
                     }
@@ -848,24 +765,24 @@ namespace Edge_Updater
         }
         private void NewMethod4(string s, int a, FileVersionInfo testm, int b)
         {
-            if (File.Exists($"{applicationPath}\\Update\\{entpDir[b]}\\chrome-bin\\{testm.FileVersion}\\msedge.exe"))
+            if (File.Exists(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion + "\\msedge.exe"))
             {
-                Directory.Move($"{applicationPath}\\Update\\{entpDir[b]}\\chrome-bin\\{testm.FileVersion}", $"{applicationPath}\\{instOrdner[b]}\\{testm.FileVersion}");
-                File.Copy($"{applicationPath}\\{instOrdner[b]}\\{testm.FileVersion}\\msedge.exe", $"{applicationPath}\\{instOrdner[b]}\\msedge.exe", true);
-                File.Copy($"{applicationPath}\\{instOrdner[b]}\\{testm.FileVersion}\\msedge_proxy.exe", $"{applicationPath}\\{instOrdner[b]}\\msedge_proxy.exe", true);
+                Directory.Move(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion, instOrdner[b] + "\\" + testm.FileVersion);
+                File.Copy(instOrdner[b] + "\\" + testm.FileVersion + "\\msedge.exe", instOrdner[b] + "\\msedge.exe", true);
+                File.Copy(instOrdner[b] + "\\" + testm.FileVersion + "\\msedge_proxy.exe", instOrdner[b] + "\\msedge_proxy.exe", true);
             }
-            else if (File.Exists($"{applicationPath}\\Update\\{entpDir[b]}\\Chrome-bin\\msedge.exe"))
+            else if (File.Exists(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
             {
-                Directory.Move($"{applicationPath}\\Update\\{entpDir[b]}\\chrome-bin\\{testm.FileVersion}", $"{applicationPath}\\{instOrdner[b]}\\{testm.FileVersion}");
-                File.Copy($"{applicationPath}\\Update\\{entpDir[b]}\\Chrome-bin\\msedge.exe", $"{applicationPath}\\{instOrdner[b]}\\msedge.exe", true);
-                File.Copy($"{applicationPath}\\Update\\{entpDir[b]}\\Chrome-bin\\msedge_proxy.exe", $"{applicationPath}\\{instOrdner[b]}\\msedge_proxy.exe", true);
+                Directory.Move(@"Update\" + entpDir[b] + "\\chrome-bin" + "\\" + testm.FileVersion, instOrdner[b] + "\\" + testm.FileVersion);
+                File.Copy(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge.exe", instOrdner[b] + "\\msedge.exe", true);
+                File.Copy(@"Update\" + entpDir[b] + "\\Chrome-bin\\msedge_proxy.exe", instOrdner[b] + "\\msedge_proxy.exe", true);
             }
-            if (!Directory.Exists($"{applicationPath}\\{instOrdner[b]}\\updates"))
+            if (!Directory.Exists(instOrdner[b] + "\\updates"))
             {
-                Directory.CreateDirectory($"{applicationPath}\\{instOrdner[b]}\\updates");
+                Directory.CreateDirectory(instOrdner[b] + "\\updates");
             }
-            File.WriteAllText($"{applicationPath}\\{instOrdner[b]}\\updates\\Version.log", testm.FileVersion + "|" + ring2[a - 1] + "|" + s);
-            Directory.Delete($"{applicationPath}\\Update\\{entpDir[b]}", true);
+            File.WriteAllText(instOrdner[b] + "\\updates\\Version.log", testm.FileVersion + "|" + ring2[(a - 1)] + "|" + s);
+            Directory.Delete(@"Update\" + entpDir[b], true);
             if (checkBox1.Checked)
             {
                 CheckButton();
@@ -879,9 +796,9 @@ namespace Edge_Updater
         {
             IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
             IWshRuntimeLibrary.IWshShortcut link = (IWshRuntimeLibrary.IWshShortcut)shell.CreateShortcut(deskDir + "\\" + instOrdner[d] + ".lnk");
-            link.IconLocation = $"{applicationPath}\\{instOrdner[d]}\\msedge.exe,{icon[c]}";
+            link.IconLocation = applicationPath + "\\" + instOrdner[d] + "\\msedge.exe" + "," + icon[c];
             link.WorkingDirectory = applicationPath;
-            link.TargetPath = $"{applicationPath}\\{instOrdner[d]} Launcher.exe";
+            link.TargetPath = applicationPath + "\\" + instOrdner[d] + " Launcher.exe";
             link.Save();
         }
         private void NewMethod6(string[] instVersion, int a, int b, int c)
@@ -890,50 +807,40 @@ namespace Edge_Updater
             Control[] buttons2 = Controls.Find("button" + b, true);
             if (instVersion[0] == buildversion[c])
             {
-                switch (instVersion[2])
+                if (instVersion[2] == "x86")
                 {
-                    case "x86":
-                        {
-                            if (buttons.Length > 0)
-                            {
-                                Button button = (Button)buttons[0];
-                                button.BackColor = Color.Green;
-                            }
-                            break;
-                        }
-                    case "x64":
-                        {
-                            if (buttons2.Length > 0)
-                            {
-                                Button button = (Button)buttons2[0];
-                                button.BackColor = Color.Green;
-                            }
-                            break;
-                        }
+                    if (buttons.Length > 0)
+                    {
+                        Button button = (Button)buttons[0];
+                        button.BackColor = Color.Green;
+                    }
+                }
+                else if (instVersion[2] == "x64")
+                {
+                    if (buttons2.Length > 0)
+                    {
+                        Button button = (Button)buttons2[0];
+                        button.BackColor = Color.Green;
+                    }
                 }
             }
             else if (instVersion[0] != buildversion[c])
             {
-                switch (instVersion[2])
+                if (instVersion[2] == "x86")
                 {
-                    case "x86":
-                        {
-                            if (buttons.Length > 0)
-                            {
-                                Button button = (Button)buttons[0];
-                                button.BackColor = Color.Red;
-                            }
-                            break;
-                        }
-                    case "x64":
-                        {
-                            if (buttons2.Length > 0)
-                            {
-                                Button button = (Button)buttons2[0];
-                                button.BackColor = Color.Red;
-                            }
-                            break;
-                        }
+                    if (buttons.Length > 0)
+                    {
+                        Button button = (Button)buttons[0];
+                        button.BackColor = Color.Red;
+                    }
+                }
+                else if (instVersion[2] == "x64")
+                {
+                    if (buttons2.Length > 0)
+                    {
+                        Button button = (Button)buttons2[0];
+                        button.BackColor = Color.Red;
+                    }
                 }
             }
         }
@@ -943,16 +850,16 @@ namespace Edge_Updater
             Button button = (Button)buttons[0];
             if (!checkBox1.Checked)
             {
-                if (File.Exists($"{applicationPath}\\Edge\\updates\\Version.log"))
+                if (File.Exists(@"Edge\updates\Version.log"))
                 {
-                    NewMethod8(a, arch, button, File.ReadAllText($"{applicationPath}\\Edge\\updates\\Version.log").Split(new char[] { '|' }));
+                    NewMethod8(a, arch, button, File.ReadAllText(@"Edge\updates\Version.log").Split(new char[] { '|' }));
                 }
             }
             if (checkBox1.Checked)
             {
-                if (File.Exists($"{applicationPath}\\{instOrdner[a]}\\updates\\Version.log"))
+                if (File.Exists(instOrdner[a] + "\\updates\\Version.log"))
                 {
-                    NewMethod8(a, arch, button, File.ReadAllText($"{applicationPath}\\{instOrdner[a]}\\updates\\Version.log").Split(new char[] { '|' }));
+                    NewMethod8(a, arch, button, File.ReadAllText(instOrdner[a] + "\\updates\\Version.log").Split(new char[] { '|' }));
                 }
             }
         }
@@ -968,7 +875,7 @@ namespace Edge_Updater
                 toolTip.SetToolTip(button, String.Empty);
             }
         }
-        private async Task CheckUpdate()
+        private void CheckUpdate()
         {
             GroupBox groupBoxupdate = new GroupBox
             {
@@ -1040,42 +947,13 @@ namespace Edge_Updater
                 var response = request.GetResponse();
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    Version version = new Version(reader.ReadToEnd());
-                    Version testm = new Version(FileVersionInfo.GetVersionInfo($"{applicationPath}\\Portable Edge (Chromium) Updater.exe").FileVersion);
-                    versionLabel.Text = testm + "  >>> " + version;
-                    if (version > testm)
+                    var version = reader.ReadToEnd();
+                    FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Edge (Chromium) Updater.exe");
+                    versionLabel.Text = testm.FileVersion + "  >>> " + version;
+                    if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
                     {
-                        for (int i = 0; i < CommandLineArgs.GetLength(0); i++)
-                        {
-                            if (CommandLineArgs[i].ToLower().Equals("-updateall"))
-                            {
-                                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                                using (WebClient myWebClient2 = new WebClient())
-                                {
-                                    myWebClient2.DownloadFile($"https://github.com/UndertakerBen/PorEdgeUpd/releases/download/v{version}/Portable.Edge.Chromium.Updater.v{version}.7z", $"{applicationPath}\\Portable.Edge.Chromium.Updater.v{version}.7z");
-                                }
-                                File.AppendAllText($"{applicationPath}\\Update.cmd", "@echo off" + "\r\n" +
-                                    "timeout /t 5 /nobreak" + "\r\n" +
-                                    "\"" + applicationPath + "\\Bin\\7zr.exe\" e \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\" -o\"" + applicationPath + "\" \"Portable Edge (Chromium) Updater.exe\"" + " -y\r\n" +
-                                    "call cmd /c Start /b \"\" " + "\"" + applicationPath + "\\Portable Edge (Chromium) Updater.exe\" -UpdateAll\r\n" +
-                                    "del /f /q \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\"\r\n" +
-                                    "del /f /q \"" + applicationPath + "\\Update.cmd\" && exit\r\n" +
-                                    "exit\r\n");
-
-                                string arguments = $" /c call \"{applicationPath}\\Update.cmd";
-                                Process process = new Process();
-                                process.StartInfo.FileName = "cmd.exe";
-                                process.StartInfo.Arguments = arguments;
-                                process.Start();
-                                Close();
-                                await Task.Delay(2000);
-                            }
-                            else
-                            {
-                                Controls.Add(groupBoxupdate);
-                                groupBox3.Enabled = false;
-                            }
-                        }
+                        Controls.Add(groupBoxupdate);
+                        groupBox3.Enabled = false;
                     }
                     reader.Close();
                 }
@@ -1096,9 +974,9 @@ namespace Edge_Updater
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     using (WebClient myWebClient2 = new WebClient())
                     {
-                        myWebClient2.DownloadFile($"https://github.com/UndertakerBen/PorEdgeUpd/releases/download/v{version}/Portable.Edge.Chromium.Updater.v{version}.7z", $"{applicationPath}\\Portable.Edge.Chromium.Updater.v{version}.7z");
+                        myWebClient2.DownloadFile($"https://github.com/UndertakerBen/PorEdgeUpd/releases/download/v{version}/Portable.Edge.Chromium.Updater.v{version}.7z", @"Portable.Edge.Chromium.Updater.v" + version + ".7z");
                     }
-                    File.AppendAllText($"{applicationPath}\\Update.cmd", "@echo off" + "\n" +
+                    File.AppendAllText(@"Update.cmd", "@echo off" + "\n" +
                         "timeout /t 2 /nobreak" + "\n" +
                         "\"" + applicationPath + "\\Bin\\7zr.exe\" e \"" + applicationPath + "\\Portable.Edge.Chromium.Updater.v" + version + ".7z\" -o\"" + applicationPath + "\" \"Portable Edge (Chromium) Updater.exe\"" + " -y\n" +
                         "call cmd /c Start /b \"\" " + "\"" + applicationPath + "\\Portable Edge (Chromium) Updater.exe\"\n" +
@@ -1106,7 +984,7 @@ namespace Edge_Updater
                         "del /f /q \"" + applicationPath + "\\Update.cmd\" && exit\n" +
                         "exit\n");
 
-                    string arguments = $" /c call {applicationPath}\\Update.cmd";
+                    string arguments = " /c call Update.cmd";
                     Process process = new Process();
                     process.StartInfo.FileName = "cmd.exe";
                     process.StartInfo.Arguments = arguments;
@@ -1122,7 +1000,7 @@ namespace Edge_Updater
                 using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
                     var version = reader.ReadToEnd();
-                    FileVersionInfo testm = FileVersionInfo.GetVersionInfo($"{applicationPath}\\Bin\\Launcher\\Edge Launcher.exe");
+                    FileVersionInfo testm = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\Edge Launcher.exe");
                     if (Convert.ToInt32(version.Replace(".", "")) > Convert.ToInt32(testm.FileVersion.Replace(".", "")))
                     {
                         reader.Close();
@@ -1130,25 +1008,25 @@ namespace Edge_Updater
                         {
                             using (WebClient myWebClient2 = new WebClient())
                             {
-                                myWebClient2.DownloadFile("https://github.com/UndertakerBen/PorEdgeUpd/raw/master/Launcher/Launcher.7z", $"{applicationPath}\\Launcher.7z");
+                                myWebClient2.DownloadFile("https://github.com/UndertakerBen/PorEdgeUpd/raw/master/Launcher/Launcher.7z", @"Launcher.7z");
                             }
-                            string arguments = $" x \"{applicationPath}\\Launcher.7z\" -o\"{applicationPath}\\Bin\\Launcher\" -y";
+                            string arguments = " x " + @"Launcher.7z" + " -o" + @"Bin\\Launcher" + " -y";
                             Process process = new Process();
-                            process.StartInfo.FileName = $"{applicationPath}\\Bin\\7zr.exe";
+                            process.StartInfo.FileName = @"Bin\7zr.exe";
                             process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
                             process.StartInfo.Arguments = arguments;
                             process.Start();
                             process.WaitForExit();
-                            File.Delete($"{applicationPath}\\Launcher.7z");
+                            File.Delete(@"Launcher.7z");
                             foreach (string launcher in instOrdner)
                             {
-                                if (File.Exists($"{applicationPath}\\{launcher} Launcher.exe"))
+                                if (File.Exists(launcher + " Launcher.exe"))
                                 {
-                                    Version binLauncher = new Version(FileVersionInfo.GetVersionInfo($"{applicationPath}\\Bin\\Launcher\\{launcher} Launcher.exe").FileVersion);
-                                    Version istLauncher = new Version(FileVersionInfo.GetVersionInfo($"{applicationPath}\\{launcher} Launcher.exe").FileVersion);
-                                    if (binLauncher > istLauncher)
+                                    FileVersionInfo binLauncher = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\" + launcher + " Launcher.exe");
+                                    FileVersionInfo istLauncher = FileVersionInfo.GetVersionInfo(applicationPath + "\\" + launcher + " Launcher.exe");
+                                    if (Convert.ToDecimal(binLauncher.FileVersion) > Convert.ToDecimal(istLauncher.FileVersion))
                                     {
-                                        File.Copy($"{applicationPath}\\bin\\Launcher\\{launcher} Launcher.exe", $"{applicationPath}\\{launcher} Launcher.exe", true);
+                                        File.Copy(@"bin\\Launcher\\" + launcher + " Launcher.exe", launcher + " Launcher.exe", true);
                                     }
                                 }
                             }
@@ -1164,13 +1042,12 @@ namespace Edge_Updater
             {
 
             }
-            await Task.WhenAll();
         }
         private void VersionsInfoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Version updVersion = new Version(FileVersionInfo.GetVersionInfo($"{applicationPath}\\Portable Edge (Chromium) Updater.exe").FileVersion);
-            Version launcherVersion = new Version(FileVersionInfo.GetVersionInfo($"{applicationPath}\\Bin\\Launcher\\Edge Launcher.exe").FileVersion);
-            MessageBox.Show($"Updater Version - {updVersion}\r\nLauncher Version - {launcherVersion}", "Version Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            FileVersionInfo updVersion = FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Edge (Chromium) Updater.exe");
+            FileVersionInfo launcherVersion = FileVersionInfo.GetVersionInfo(applicationPath + "\\Bin\\Launcher\\Edge Launcher.exe");
+            MessageBox.Show("Updater Version - " + updVersion.FileVersion + "\nLauncher Version - " + launcherVersion.FileVersion, "Version Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         private void RegistrierenToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1375,7 +1252,7 @@ namespace Edge_Updater
                 }
                 else
                 {
-                    if (Directory.Exists($"{applicationPath}\\Edge"))
+                    if (Directory.Exists(@"Edge"))
                     {
                         edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1383,7 +1260,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Stable x86"))
+                    if (Directory.Exists(@"Edge Stable x86"))
                     {
                         edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1391,7 +1268,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Stable x64"))
+                    if (Directory.Exists(@"Edge Stable x64"))
                     {
                         edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1399,7 +1276,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Beta x86"))
+                    if (Directory.Exists(@"Edge Beta x86"))
                     {
                         edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1407,7 +1284,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Beta x64"))
+                    if (Directory.Exists(@"Edge Beta x64"))
                     {
                         edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1415,7 +1292,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Dev x86"))
+                    if (Directory.Exists(@"Edge Dev x86"))
                     {
                         edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1423,7 +1300,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Dev x64"))
+                    if (Directory.Exists(@"Edge Dev x64"))
                     {
                         edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1431,7 +1308,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Canary x86"))
+                    if (Directory.Exists(@"Edge Canary x86"))
                     {
                         edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1439,7 +1316,7 @@ namespace Edge_Updater
                     {
                         edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = false;
                     }
-                    if (Directory.Exists($"{applicationPath}\\Edge Canary x64"))
+                    if (Directory.Exists(@"Edge Canary x64"))
                     {
                         edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Enabled = true;
                     }
@@ -1512,7 +1389,7 @@ namespace Edge_Updater
                     {
                         if (args.Error != null)
                         {
-                            var task = webClient.DownloadFileTaskAsync(uri, $"{applicationPath}\\ADMX Policy Templates\\({version})MicrosoftEdgePolicyTemplates.zip");
+                            var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates.zip");
                             list.Add(task);
                         }
                         if (args.Cancelled == true)
@@ -1522,11 +1399,11 @@ namespace Edge_Updater
                     };
                     try
                     {
-                        if (!Directory.Exists($"{applicationPath}\\ADMX Policy Templates"))
+                        if (!Directory.Exists(applicationPath + "\\ADMX Policy Templates"))
                         {
-                            Directory.CreateDirectory($"{applicationPath}\\ADMX Policy Templates");
+                            Directory.CreateDirectory(applicationPath + "\\ADMX Policy Templates");
                         }
-                        var task = webClient.DownloadFileTaskAsync(uri, $"{applicationPath}\\ADMX Policy Templates\\({version})MicrosoftEdgePolicyTemplates.zip");
+                        var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates.zip");
                         list.Add(task);
                     }
                     catch (Exception ex)
