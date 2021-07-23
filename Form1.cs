@@ -31,69 +31,39 @@ namespace Edge_Updater
 
         public Form1()
         {
-            try
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.microsoftedgeinsider.com/api/versions");
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                for (int i = 0; i <= 3; i++)
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    string postData = "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\",}}";
-                    byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-{ring[i].ToLower()}-win-x64/versions/latest?action=select");
-                    request.Method = "POST";
-                    request.UserAgent = "Microsoft Edge Update/1.3.129.35;winhttp";
-                    request.ContentType = "application/json";
-                    request.ContentLength = byteArray.Length;
-                    Stream dataStream = request.GetRequestStream();
-                    dataStream.Write(byteArray, 0, byteArray.Length);
-                    using (dataStream = request.GetResponse().GetResponseStream())
+                    string[] text = reader.ReadToEnd().ToString().Replace("{", "").Replace("}", "").Replace("\"", "").Split(new char[] { ',' });
+                    for (int j = 0; j < text.Length; j++)
                     {
-                        StreamReader reader = new StreamReader(dataStream);
-                        string responseFromServer = reader.ReadToEnd();
-                        string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("Version\":\"")).Split(new char[] { '"' });
-                        buildversion[i] = URL[2];
-                        buildversion[i + 4] = URL[2];
-                        reader.Close();
-                        dataStream.Close();
-                    }
-                }
-                /*ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.microsoftedgeinsider.com/api/versions");
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                    {
-                        string[] text = reader.ReadToEnd().ToString().Replace("{", "").Replace("}", "").Replace("\"", "").Split(new char[] { ',' });
-                        for (int j = 0; j < text.Length; j++)
+                        if (text[j].Contains("canary:"))
                         {
-                            if (text[j].Contains("canary:"))
-                            {
-                                buildversion[0] = text[j].Split(new char[] { ':' })[1];
-                                buildversion[4] = text[j].Split(new char[] { ':' })[1];
-                            }
-                            else if (text[j].Contains("dev:"))
-                            {
-                                buildversion[1] = text[j].Split(new char[] { ':' })[1];
-                                buildversion[5] = text[j].Split(new char[] { ':' })[1];
-                            }
-                            else if (text[j].Contains("beta:"))
-                            {
-                                buildversion[2] = text[j].Split(new char[] { ':' })[1];
-                                buildversion[6] = text[j].Split(new char[] { ':' })[1];
-                            }
-                            else if (text[j].Contains("stable:"))
-                            {
-                                buildversion[3] = text[j].Split(new char[] { ':' })[1];
-                                buildversion[7] = text[j].Split(new char[] { ':' })[1];
-                            }
+                            buildversion[0] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Canary", "X86");
+                            buildversion[4] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Canary", "X64");
                         }
-                        reader.Close();
+                        else if (text[j].Contains("dev:"))
+                        {
+                            buildversion[1] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Dev", "X86");
+                            buildversion[5] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Dev", "X64");
+                        }
+                        else if (text[j].Contains("beta:"))
+                        {
+                            buildversion[2] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Beta", "X86");
+                            buildversion[6] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Beta", "X64");
+                        }
+                        else if (text[j].Contains("stable:"))
+                        {
+                            buildversion[3] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Stable", "X86");
+                            buildversion[7] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Stable", "X64");
+                        }
                     }
-                }*/
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                    reader.Close();
+                }
             }
             InitializeComponent();
             try
@@ -1420,6 +1390,64 @@ namespace Edge_Updater
             await Task.WhenAll(list);
             await Task.Delay(2000);
             Controls.Remove(progressBox);
+        }
+    }
+    public static class GetEdgeVersion
+    {
+        public static string EdgeVersion(string version, string ring, string arch)
+        {
+            try
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring + "-win-" + arch + "/versions/" + version + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
+                request.Host = "msedge.api.cdp.microsoft.com";
+                request.UserAgent = "Microsoft Edge Update/1.3.139.59;winhttp";
+                request.Method = "POST";
+                string postData = "{}";
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                request.ContentType = "application/json";
+                request.ContentLength = byteArray.Length;
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                dataStream.Close();
+                using (dataStream = request.GetResponse().GetResponseStream())
+                {
+                    string responseFromServer = new StreamReader(dataStream).ReadToEnd();
+                    if (responseFromServer != null)
+                    {
+                        request.Abort();
+                        return version;
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                string postData = "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\",}}";
+                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-{ring.ToLower()}-win-{arch}/versions/latest?action=select");
+                request.Method = "POST";
+                request.UserAgent = "Microsoft Edge Update/1.3.129.35;winhttp";
+                request.ContentType = "application/json";
+                request.ContentLength = byteArray.Length;
+                Stream dataStream = request.GetRequestStream();
+                dataStream.Write(byteArray, 0, byteArray.Length);
+                using (dataStream = request.GetResponse().GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(dataStream);
+                    string responseFromServer = reader.ReadToEnd();
+                    string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("Version\":\"")).Split(new char[] { '"' });
+                    reader.Close();
+                    dataStream.Close();
+                    return URL[2];
+                }
+            }
+            
         }
     }
 }
