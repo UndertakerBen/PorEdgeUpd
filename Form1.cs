@@ -1424,9 +1424,9 @@ namespace Edge_Updater
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 string postData = "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\",}}";
                 byte[] byteArray = Encoding.UTF8.GetBytes(postData);
