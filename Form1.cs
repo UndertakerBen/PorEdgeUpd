@@ -79,7 +79,7 @@ namespace Edge_Updater
                         string[] splittext = text.Substring(text.IndexOf("{&quot;Product&quot;:&quot;Policy")).Replace("{&quot;Product&quot;:&quot;Policy", "|{&quot;Product&quot;:&quot;Policy").Replace("&quot;", "\"").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("{\"ReleaseId", "|{\"ReleaseId").Split(new char[] { '|' });
                         for (int i = 0; i < splittext.GetLength(0); i++)
                         {
-                            if (splittext[i].Contains("ProductVersion"))
+                            if (splittext[i].Contains("ProductVersion") & splittext[i].Contains("ArtifactName\":\"zip\","))
                             {
                                 string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
                                 string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
@@ -94,7 +94,7 @@ namespace Edge_Updater
                                     tb.Click += new EventHandler(Download_Click);
                                     async void Download_Click(object sender, EventArgs e)
                                     {
-                                        await DownloadADMX(productURL, productVersion);
+                                        await DownloadADMX(productURL, productVersion, "zip");
                                     }
 
                                 }
@@ -105,11 +105,43 @@ namespace Edge_Updater
                                     tb2.Click += new EventHandler(Download2_Click);
                                     async void Download2_Click(object sender, EventArgs e)
                                     {
-                                        await DownloadADMX(productURL, productVersion);
+                                        await DownloadADMX(productURL, productVersion, "zip");
                                     }
                                 }
                                 policyVMenu = productVShort;
-                                
+
+                            }
+                            else if (splittext[i].Contains("ProductVersion") & splittext[i].Contains("ArtifactName\":\"cab\","))
+                            {
+                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"cab\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
+                                if (policyVMenu != productVShort)
+                                {
+                                    SubPVMenu = new ToolStripMenuItem(productVShort);
+                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                    tb.ToolTipText = productURL;
+                                    tb.Click += new EventHandler(Download_Click);
+                                    async void Download_Click(object sender, EventArgs e)
+                                    {
+                                        await DownloadADMX(productURL, productVersion, "cab");
+                                    }
+
+                                }
+                                else if (policyVMenu == productVShort)
+                                {
+                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                    tb2.ToolTipText = productURL;
+                                    tb2.Click += new EventHandler(Download2_Click);
+                                    async void Download2_Click(object sender, EventArgs e)
+                                    {
+                                        await DownloadADMX(productURL, productVersion, "cab");
+                                    }
+                                }
+                                policyVMenu = productVShort;
+
                             }
                         }
                         reader.Close();
@@ -1301,7 +1333,7 @@ namespace Edge_Updater
                 
             }
         }
-        public async Task DownloadADMX(string URL, string version)
+        public async Task DownloadADMX(string URL, string version, string extension)
         {
             GroupBox progressBox = new GroupBox
             {
@@ -1314,7 +1346,7 @@ namespace Edge_Updater
                 AutoSize = false,
                 Location = new Point(5, 10),
                 Size = new Size(progressBox.Size.Width - 10, 25),
-                Text = "(" + version + ")MicrosoftEdgePolicyTemplates.zip",
+                Text = "(" + version + ")MicrosoftEdgePolicyTemplates." + extension,
                 TextAlign = ContentAlignment.BottomCenter
             };
             title.Font = new Font(title.Font.Name, 9.25F, FontStyle.Bold);
@@ -1359,7 +1391,7 @@ namespace Edge_Updater
                     {
                         if (args.Error != null)
                         {
-                            var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates.zip");
+                            var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates." + extension);
                             list.Add(task);
                         }
                         if (args.Cancelled == true)
@@ -1373,7 +1405,7 @@ namespace Edge_Updater
                         {
                             Directory.CreateDirectory(applicationPath + "\\ADMX Policy Templates");
                         }
-                        var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates.zip");
+                        var task = webClient.DownloadFileTaskAsync(uri, "ADMX Policy Templates\\(" + version + ")MicrosoftEdgePolicyTemplates." + extension);
                         list.Add(task);
                     }
                     catch (Exception ex)
