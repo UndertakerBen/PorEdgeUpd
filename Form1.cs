@@ -28,6 +28,7 @@ namespace Edge_Updater
         readonly string policyVMenu;
         readonly ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
         readonly ToolStripMenuItem SubPVMenu = new ToolStripMenuItem();
+        
 
         public Form1()
         {
@@ -75,15 +76,15 @@ namespace Edge_Updater
                 {
                     using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
                     {
-                        var text = reader.ReadToEnd().ToString();
-                        string[] splittext = text.Substring(text.IndexOf("{&quot;Product&quot;:&quot;Policy")).Replace("{&quot;Product&quot;:&quot;Policy", "|{&quot;Product&quot;:&quot;Policy").Replace("&quot;", "\"").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("{\"ReleaseId", "|{\"ReleaseId").Split(new char[] { '|' });
+                        var text = reader.ReadToEnd().ToString().ToLower();
+                        string[] splittext = text.Substring(text.IndexOf("{&quot;product&quot;:&quot;policy")).Replace("{&quot;product&quot;:&quot;policy", "|{&quot;product&quot;:&quot;policy").Replace("&quot;", "\"").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("{\"releaseid", "|{\"releaseid").Split(new char[] { '|' });
                         for (int i = 0; i < splittext.GetLength(0); i++)
                         {
-                            if (splittext[i].Contains("ProductVersion") & splittext[i].Contains("ArtifactName\":\"zip\","))
+                            if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"zip\","))
                             {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
                                 string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"zip\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
+                                string productURL = splittext[i].Substring(splittext[i].IndexOf("artifactname\":\"zip\",\"location\":")).Split(new char[] { '"' }, 8)[6];
                                 if (policyVMenu != productVShort)
                                 {
                                     SubPVMenu = new ToolStripMenuItem(productVShort);
@@ -111,11 +112,11 @@ namespace Edge_Updater
                                 policyVMenu = productVShort;
 
                             }
-                            else if (splittext[i].Contains("ProductVersion") & splittext[i].Contains("ArtifactName\":\"cab\","))
+                            else if (splittext[i].Contains("productVersion") & splittext[i].Contains("artifactname\":\"cab\","))
                             {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("ProductVersion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
                                 string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("ArtifactName\":\"cab\",\"Location\":")).Split(new char[] { '"' }, 8)[6];
+                                string productURL = splittext[i].Substring(splittext[i].IndexOf("artifactname\":\"cab\",\"location\":")).Split(new char[] { '"' }, 8)[6];
                                 if (policyVMenu != productVShort)
                                 {
                                     SubPVMenu = new ToolStripMenuItem(productVShort);
