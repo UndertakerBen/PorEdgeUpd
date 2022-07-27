@@ -112,7 +112,7 @@ namespace Edge_Updater
                                 policyVMenu = productVShort;
 
                             }
-                            else if (splittext[i].Contains("productVersion") & splittext[i].Contains("artifactname\":\"cab\","))
+                            else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"cab\","))
                             {
                                 string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
                                 string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
