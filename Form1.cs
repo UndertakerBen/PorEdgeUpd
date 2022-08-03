@@ -32,40 +32,15 @@ namespace Edge_Updater
 
         public Form1()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://www.microsoftedgeinsider.com/api/versions");
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                {
-                    string[] text = reader.ReadToEnd().ToString().Replace("{", "").Replace("}", "").Replace("\"", "").Split(new char[] { ',' });
-                    for (int j = 0; j < text.Length; j++)
-                    {
-                        if (text[j].Contains("canary:"))
-                        {
-                            buildversion[0] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Canary", "X86");
-                            buildversion[4] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Canary", "X64");
-                        }
-                        else if (text[j].Contains("dev:"))
-                        {
-                            buildversion[1] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Dev", "X86");
-                            buildversion[5] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Dev", "X64");
-                        }
-                        else if (text[j].Contains("beta:"))
-                        {
-                            buildversion[2] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Beta", "X86");
-                            buildversion[6] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Beta", "X64");
-                        }
-                        else if (text[j].Contains("stable:"))
-                        {
-                            buildversion[3] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Stable", "X86");
-                            buildversion[7] = GetEdgeVersion.EdgeVersion(text[j].Split(new char[] { ':' })[1], "Stable", "X64");
-                        }
-                    }
-                    reader.Close();
-                }
-            }
+            buildversion[0] = GetEdgeVersion.EdgeVersion("Canary", "X86");
+            buildversion[4] = GetEdgeVersion.EdgeVersion("Canary", "X64");
+            buildversion[1] = GetEdgeVersion.EdgeVersion("Dev", "X86");
+            buildversion[5] = GetEdgeVersion.EdgeVersion("Dev", "X64");
+            buildversion[2] = GetEdgeVersion.EdgeVersion("Beta", "X86");
+            buildversion[6] = GetEdgeVersion.EdgeVersion("Beta", "X64");
+            buildversion[3] = GetEdgeVersion.EdgeVersion("Stable", "X86");
+            buildversion[7] = GetEdgeVersion.EdgeVersion("Stable", "X64");
+
             InitializeComponent();
             try
             {
@@ -79,72 +54,147 @@ namespace Edge_Updater
                         string texting = reader.ReadToEnd();
                         string text = texting.ToLower().Replace("&quot;", "\"");
                         reader.Close();
-                        string[] splittext = text.Substring(text.IndexOf("\"product\": \"policy")).Replace("\"product\": \"policy", "|\"product\": \"policy").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("\"releaseid", "|\"releaseid").Split(new char[] { '|' });
-                        for (int i = 0; i < splittext.GetLength(0); i++)
+                        if (text.Contains("\"product\": \"policy"))
                         {
-                            if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"zip\","))
+                            string[] splittext = text.Substring(text.IndexOf("\"product\": \"policy")).Replace("\"product\": \"policy", "|\"product\": \"policy").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("\"releaseid", "|\"releaseid").Split(new char[] { '|' });
+                            for (int i = 0; i < splittext.GetLength(0); i++)
                             {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
-                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
-                                if (policyVMenu != productVShort)
+                                if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"zip\","))
                                 {
-                                    SubPVMenu = new ToolStripMenuItem(productVShort);
-                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
-                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
-                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb.ToolTipText = productURL;
-                                    tb.Click += new EventHandler(Download_Click);
-                                    async void Download_Click(object sender, EventArgs e)
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
                                     {
-                                        await DownloadADMX(productURL, productVersion, "zip");
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+
                                     }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
 
                                 }
-                                else if (policyVMenu == productVShort)
+                                else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"cab\","))
                                 {
-                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb2.ToolTipText = productURL;
-                                    tb2.Click += new EventHandler(Download2_Click);
-                                    async void Download2_Click(object sender, EventArgs e)
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
                                     {
-                                        await DownloadADMX(productURL, productVersion, "zip");
-                                    }
-                                }
-                                policyVMenu = productVShort;
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
 
+                                    }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
+
+                                }
                             }
-                            else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"cab\","))
+                        
+                        }
+                        else if (text.Contains("\"product\":\"policy"))
+                        {
+                            string[] splittext = text.Substring(text.IndexOf("\"product\":\"policy")).Replace("\"product\":\"policy", "|\"product\":\"policy").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("\"releaseid", "|\"releaseid").Split(new char[] { '|' });
+                            for (int i = 0; i < splittext.GetLength(0); i++)
                             {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
-                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
-                                if (policyVMenu != productVShort)
+                                if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"zip\","))
                                 {
-                                    SubPVMenu = new ToolStripMenuItem(productVShort);
-                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
-                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
-                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb.ToolTipText = productURL;
-                                    tb.Click += new EventHandler(Download_Click);
-                                    async void Download_Click(object sender, EventArgs e)
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
                                     {
-                                        await DownloadADMX(productURL, productVersion, "cab");
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+
                                     }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
 
                                 }
-                                else if (policyVMenu == productVShort)
+                                else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"cab\","))
                                 {
-                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb2.ToolTipText = productURL;
-                                    tb2.Click += new EventHandler(Download2_Click);
-                                    async void Download2_Click(object sender, EventArgs e)
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
                                     {
-                                        await DownloadADMX(productURL, productVersion, "cab");
-                                    }
-                                }
-                                policyVMenu = productVShort;
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
 
+                                    }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
+
+                                }
                             }
                         }
                         reader.Close();
@@ -1429,39 +1479,10 @@ namespace Edge_Updater
     }
     public static class GetEdgeVersion
     {
-        public static string EdgeVersion(string version, string ring, string arch)
+        public static string EdgeVersion(/*string version, */string ring, string arch)
         {
             try
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://msedge.api.cdp.microsoft.com/api/v1.1/internal/contents/Browser/namespaces/Default/names/msedge-" + ring + "-win-" + arch + "/versions/" + version + "/files?action=GenerateDownloadInfo&foregroundPriority=true");
-                request.Host = "msedge.api.cdp.microsoft.com";
-                request.UserAgent = "Microsoft Edge Update/1.3.139.59;winhttp";
-                request.Method = "POST";
-                string postData = "{}";
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-                request.ContentType = "application/json";
-                request.ContentLength = byteArray.Length;
-                Stream dataStream = request.GetRequestStream();
-                dataStream.Write(byteArray, 0, byteArray.Length);
-                dataStream.Close();
-                using (dataStream = request.GetResponse().GetResponseStream())
-                {
-                    string responseFromServer = new StreamReader(dataStream).ReadToEnd();
-                    if (responseFromServer != null)
-                    {
-                        request.Abort();
-                        return version;
-                    }
-                    else
-                    {
-                        return "";
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                //MessageBox.Show(ex.Message);
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 string postData = "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\",}}";
                 byte[] byteArray = Encoding.UTF8.GetBytes(postData);
@@ -1481,6 +1502,10 @@ namespace Edge_Updater
                     dataStream.Close();
                     return URL[2];
                 }
+            }
+            catch (Exception)
+            {
+                return "No Response";
             }
             
         }
