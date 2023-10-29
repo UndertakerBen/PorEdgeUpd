@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,35 +25,12 @@ namespace Edge_Updater
         private readonly string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         private readonly string applicationPath = Application.StartupPath;
         private readonly ToolTip toolTip = new ToolTip();
-        private string policyVMenu;
-        private string policyTemplatesFetch;
-        ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
-        ToolStripMenuItem SubPVMenu = new ToolStripMenuItem();
+        readonly string policyVMenu;
+        readonly ToolStripMenuItem toolStripMenuItem = new ToolStripMenuItem();
+        readonly ToolStripMenuItem SubPVMenu = new ToolStripMenuItem();
+        
 
         public Form1()
-        {
-            InitializeComponent();
-            ObjectTexts();
-
-            var UpdaterVersion = GetNewUpdaterVersion.NewUpdaterVersion();
-            if (UpdaterVersion != null)
-            {
-                if (Convert.ToInt32(UpdaterVersion.ToString().Replace(".", "")) > Convert.ToInt32(FileVersionInfo.GetVersionInfo(applicationPath + "\\Portable Edge (Chromium) Updater.exe").FileVersion.Replace(".", "")))
-                {
-                    CheckUpdate();
-                }
-                else
-                {
-                    NewMethod9();
-                }
-            }
-            else
-            {
-                NewMethod9();
-            }
-        }
-
-        private void NewMethod9()
         {
             buildversion[0] = GetEdgeVersion.EdgeVersion("Canary", "X86");
             buildversion[4] = GetEdgeVersion.EdgeVersion("Canary", "X64");
@@ -63,14 +40,171 @@ namespace Edge_Updater
             buildversion[6] = GetEdgeVersion.EdgeVersion("Beta", "X64");
             buildversion[3] = GetEdgeVersion.EdgeVersion("Stable", "X86");
             buildversion[7] = GetEdgeVersion.EdgeVersion("Stable", "X64");
-            try
+
+            InitializeComponent();
+            /*try
             {
-                backgroundWorker1.RunWorkerAsync();
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create("https://www.microsoft.com/en-us/edge/business/download");
+                HttpWebResponse response2 = (HttpWebResponse)request2.GetResponse();
+                if (response2.StatusCode == HttpStatusCode.OK)
+                {
+                    using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
+                    {
+                        string texting = reader.ReadToEnd();
+                        string text = texting.ToLower().Replace("&quot;", "\"");
+                        reader.Close();
+                        if (text.Contains("\"product\": \"policy"))
+                        {
+                            string[] splittext = text.Substring(text.IndexOf("\"product\": \"policy")).Replace("\"product\": \"policy", "|\"product\": \"policy").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("\"releaseid", "|\"releaseid").Split(new char[] { '|' });
+                            for (int i = 0; i < splittext.GetLength(0); i++)
+                            {
+                                if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"zip\","))
+                                {
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
+                                    {
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+
+                                    }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
+
+                                }
+                                else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"cab\","))
+                                {
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
+                                    {
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
+
+                                    }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
+
+                                }
+                            }
+                        
+                        }
+                        else if (text.Contains("\"product\":\"policy"))
+                        {
+                            string[] splittext = text.Substring(text.IndexOf("\"product\":\"policy")).Replace("\"product\":\"policy", "|\"product\":\"policy").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("\"releaseid", "|\"releaseid").Split(new char[] { '|' });
+                            for (int i = 0; i < splittext.GetLength(0); i++)
+                            {
+                                if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"zip\","))
+                                {
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
+                                    {
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+
+                                    }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "zip");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
+
+                                }
+                                else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"cab\","))
+                                {
+                                    string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
+                                    string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
+                                    string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
+                                    if (policyVMenu != productVShort)
+                                    {
+                                        SubPVMenu = new ToolStripMenuItem(productVShort);
+                                        SubPVMenu.Font = new Font("Segoe UI", 9F);
+                                        policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
+                                        var tb = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb.ToolTipText = productURL;
+                                        tb.Click += new EventHandler(Download_Click);
+                                        async void Download_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
+
+                                    }
+                                    else if (policyVMenu == productVShort)
+                                    {
+                                        var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
+                                        tb2.ToolTipText = productURL;
+                                        tb2.Click += new EventHandler(Download2_Click);
+                                        async void Download2_Click(object sender, EventArgs e)
+                                        {
+                                            await DownloadADMX(productURL, productVersion, "cab");
+                                        }
+                                    }
+                                    policyVMenu = productVShort;
+
+                                }
+                            }
+                        }
+                        reader.Close();
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (WebException ex)
             {
-                MessageBox.Show("Template searching error:\r\n\r\n" + ex.Message);
-            }
+                MessageBox.Show("Template\r\n" + ex.Message);
+            }*/
             label2.Text = buildversion[0];
             label4.Text = buildversion[1];
             label6.Text = buildversion[2];
@@ -133,6 +267,7 @@ namespace Edge_Updater
                     }
                 }
             }
+            CheckUpdate();
             if ((buildversion[0] == null) || (buildversion[1] == null) || (buildversion[2] == null) || (buildversion[3] == null))
             {
                 groupBox3.Enabled = false;
@@ -217,7 +352,7 @@ namespace Edge_Updater
         {
             if (checkBox1.Checked)
             {
-                await NewMethod(2, 6, 1, 7);
+                await NewMethod(2, 6, 1,  7);
             }
             else if (!checkBox1.Checked)
             {
@@ -287,7 +422,7 @@ namespace Edge_Updater
             {
                 AutoSize = false,
                 Location = new Point(5, 10),
-                Size = new Size(progressBox.Size.Width - 10, 25),
+                Size = new Size(progressBox.Size.Width-10, 25),
                 Text = "Edge Chromium " + ring2[a] + " " + buildversion[a] + " " + architektur2[c],
                 TextAlign = ContentAlignment.BottomCenter
             };
@@ -334,112 +469,119 @@ namespace Edge_Updater
                 using (dataStream = request.GetResponse().GetResponseStream())
                 {
                     string responseFromServer = new StreamReader(dataStream).ReadToEnd();
-                    string[] URL = responseFromServer.Substring(responseFromServer.IndexOf("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + ".exe")).Split(new char[] { '"' });
-                    WebClient myWebClient = new WebClient();
-                    Uri uri = new Uri(URL[4]);
-                    using (webClient = new WebClient())
+                    
+                    for (int i = 0; i < responseFromServer.Split('{').Length; i++)
                     {
-                        webClient.DownloadProgressChanged += (o, args) =>
+                        WebClient myWebClient = new WebClient();
+                        if (responseFromServer.Split('{')[i].Contains("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + ".exe"))
                         {
-                            Control[] buttons = Controls.Find("button" + d, true);
-                            if (buttons.Length > 0)
+                            
+                            Uri uri = new Uri(responseFromServer.Split('{')[i].Substring(responseFromServer.Split('{')[i].IndexOf("\"Url\":\"")).Split(new char[] { '"' })[3]);
+                            using (webClient = new WebClient())
                             {
-                                Button button = (Button)buttons[0];
-                                button.BackColor = Color.Orange;
-                            }
-                            progressBarneu.Value = args.ProgressPercentage;
-                            downloadLabel.Text = $"{args.BytesReceived / 1024d / 1024d:0.00} MB's / {args.TotalBytesToReceive / 1024d / 1024d:0.00} MB's";
-                            percLabel.Text = $"{args.ProgressPercentage}%";
-                        };
-                        webClient.DownloadFileCompleted += (o, args) =>
-                        {
-                            if (args.Error != null)
-                            {
-                                var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
-                                list.Add(task);
-                            }
-                            if (args.Cancelled == true)
-                            {
-                                MessageBox.Show("Download has been canceled.");
-                            }
-                            else
-                            {
-                                downloadLabel.Text = Langfile.Texts("downUnpstart");
-                                string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
-                                Process process = new Process();
-                                process.StartInfo.FileName = @"Bin\7zr.exe";
-                                process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
-                                process.StartInfo.Arguments = arguments;
-                                process.Start();
-                                process.WaitForExit();
-                                process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[b] + " -y";
-                                process.Start();
-                                process.WaitForExit();
-                                if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
+                                webClient.DownloadProgressChanged += (o, args) =>
                                 {
-                                    if (!Directory.Exists(instOrdner[b]))
+                                    Control[] buttons = Controls.Find("button" + d, true);
+                                    if (buttons.Length > 0)
                                     {
-                                        Directory.CreateDirectory(instOrdner[b]);
+                                        Button button = (Button)buttons[0];
+                                        button.BackColor = Color.Orange;
                                     }
-                                    else if (Directory.Exists(instOrdner[b]))
+                                    progressBarneu.Value = args.ProgressPercentage;
+                                    downloadLabel.Text = $"{args.BytesReceived / 1024d / 1024d:0.00} MB's / {args.TotalBytesToReceive / 1024d / 1024d:0.00} MB's";
+                                    percLabel.Text = $"{args.ProgressPercentage}%";
+                                };
+                                webClient.DownloadFileCompleted += (o, args) =>
+                                {
+                                    if (args.Error != null)
                                     {
-                                        if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                        var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                                        list.Add(task);
+                                    }
+                                    if (args.Cancelled == true)
+                                    {
+                                        MessageBox.Show("Download has been canceled.");
+                                    }
+                                    else
+                                    {
+                                        downloadLabel.Text = Langfile.Texts("downUnpstart");
+                                        string arguments = " x " + "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe" + " -o" + @"Update\" + entpDir[b] + " -y";
+                                        Process process = new Process();
+                                        process.StartInfo.FileName = @"Bin\7zr.exe";
+                                        process.StartInfo.WindowStyle = ProcessWindowStyle.Minimized;
+                                        process.StartInfo.Arguments = arguments;
+                                        process.Start();
+                                        process.WaitForExit();
+                                        process.StartInfo.Arguments = " x " + @"Update\" + entpDir[b] + "\\MSEDGE.7z -o" + @"Update\" + entpDir[b] + " -y";
+                                        process.Start();
+                                        process.WaitForExit();
+                                        if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\Chrome-bin\\msedge.exe"))
                                         {
-                                            string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
-                                            if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                            if (!Directory.Exists(instOrdner[b]))
                                             {
-                                                Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                                Directory.CreateDirectory(instOrdner[b]);
                                             }
+                                            else if (Directory.Exists(instOrdner[b]))
+                                            {
+                                                if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                                {
+                                                    string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                                    if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                                    {
+                                                        Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                                    }
+                                                }
+                                            }
+                                            NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe"), b);
+                                        }
+                                        else if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"))
+                                        {
+                                            if (!Directory.Exists(instOrdner[b]))
+                                            {
+                                                Directory.CreateDirectory(instOrdner[b]);
+                                            }
+                                            else if (Directory.Exists(instOrdner[b]))
+                                            {
+                                                if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                                {
+                                                    string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
+                                                    if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
+                                                    {
+                                                        Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
+                                                    }
+                                                }
+                                            }
+                                            NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"), b);
                                         }
                                     }
-                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\msedge.exe"), b);
-                                }
-                                else if (File.Exists(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"))
-                                {
-                                    if (!Directory.Exists(instOrdner[b]))
+                                    if (checkBox5.Checked)
                                     {
-                                        Directory.CreateDirectory(instOrdner[b]);
-                                    }
-                                    else if (Directory.Exists(instOrdner[b]))
-                                    {
-                                        if (File.Exists(instOrdner[b] + "\\msedge.exe") && (File.Exists(instOrdner[b] + "\\updates\\version.log")))
+                                        if (!File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk"))
                                         {
-                                            string[] instVersion = File.ReadAllText(instOrdner[b] + "\\updates\\Version.log").Split(new char[] { '|' });
-                                            if (Directory.Exists(instOrdner[b] + "\\" + instVersion[0]))
-                                            {
-                                                Directory.Delete(instOrdner[b] + "\\" + instVersion[0], true);
-                                            }
+                                            NewMethod5(a, b);
                                         }
                                     }
-                                    NewMethod4(architektur2[c], d, FileVersionInfo.GetVersionInfo(applicationPath + "\\Update\\" + entpDir[b] + "\\chrome-bin\\" + buildversion[a] + "\\msedge.exe"), b);
-                                }
-                            }
-                            if (checkBox5.Checked)
-                            {
-                                if (!File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk"))
+                                    else if (File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk") && (instOrdner[b] == "Edge"))
+                                    {
+                                        NewMethod5(a, b);
+                                    }
+                                    if (!File.Exists(@instOrdner[b] + " Launcher.exe"))
+                                    {
+                                        File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
+                                    }
+                                    File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                                    downloadLabel.Text = Langfile.Texts("downUnpfine");
+                                };
+                                try
                                 {
-                                    NewMethod5(a, b);
+                                    var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
+                                    list.Add(task);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message);
                                 }
                             }
-                            else if (File.Exists(deskDir + "\\" + instOrdner[b] + ".lnk") && (instOrdner[b] == "Edge"))
-                            {
-                                NewMethod5(a, b);
-                            }
-                            if (!File.Exists(@instOrdner[b] + " Launcher.exe"))
-                            {
-                                File.Copy(@"Bin\Launcher\" + instOrdner[b] + " Launcher.exe", @instOrdner[b] + " Launcher.exe");
-                            }
-                            File.Delete("MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
-                            downloadLabel.Text = Langfile.Texts("downUnpfine");
-                        };
-                        try
-                        {
-                            var task = webClient.DownloadFileTaskAsync(uri, "MicrosoftEdge_" + architektur[c] + "_" + buildversion[a] + "_" + ring[a] + ".exe");
-                            list.Add(task);
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show(ex.Message);
                         }
                     }
                 }
@@ -831,7 +973,7 @@ namespace Edge_Updater
             {
                 Size = new Size(50, 23),
                 BackColor = Color.FromArgb(224, 224, 224)
-
+               
             };
             Button updateButton = new Button
             {
@@ -856,7 +998,6 @@ namespace Edge_Updater
             downLabel.Text = Langfile.Texts("downLabel");
             void LaterButton_Click(object sender, EventArgs e)
             {
-                NewMethod9();
                 groupBoxupdate.Dispose();
                 Controls.Remove(groupBoxupdate);
                 groupBox3.Enabled = true;
@@ -877,7 +1018,6 @@ namespace Edge_Updater
                         groupBox3.Enabled = false;
                     }
                     reader.Close();
-                    response.Close();
                 }
             }
             catch (Exception)
@@ -1250,7 +1390,7 @@ namespace Edge_Updater
             }
             catch (Exception)
             {
-
+                
             }
         }
         public async Task DownloadADMX(string URL, string version, string extension)
@@ -1297,8 +1437,8 @@ namespace Edge_Updater
             List<Task> list = new List<Task>();
             try
             {
-                WebClient myWebClient = new WebClient();
-                Uri uri = new Uri(URL);
+                    WebClient myWebClient = new WebClient();
+                    Uri uri = new Uri(URL);
                 using (webClient = new WebClient())
                 {
                     webClient.DownloadProgressChanged += (o, args) =>
@@ -1343,232 +1483,6 @@ namespace Edge_Updater
             await Task.Delay(2000);
             Controls.Remove(progressBox);
         }
-
-        private async void Download2_Click3(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "cab");
-        }
-
-        private async void Download_Click3(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "cab");
-        }
-
-        private async void Download2_Click2(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "zip");
-        }
-
-        private async void Download_Click2(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "zip");
-        }
-
-        private async void Download2_Click1(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "cab");
-        }
-
-        private async void Download_Click1(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "cab");
-        }
-
-        private async void Download2_Click(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "zip");
-        }
-
-        private async void Download_Click(object sender, EventArgs e, string productVersion, string productURL)
-        {
-            await DownloadADMX(productURL, productVersion, "zip");
-        }
-
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-            try
-            {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create("https://www.microsoft.com/en-us/edge/business/download");
-                HttpWebResponse response2 = (HttpWebResponse)request2.GetResponse();
-                if (response2.StatusCode == HttpStatusCode.OK)
-                {
-                    using (StreamReader reader = new StreamReader(response2.GetResponseStream()))
-                    {
-                        policyTemplatesFetch = reader.ReadToEnd().ToLower().Replace("&quot;", "\"");
-                        reader.Close();
-                        response2.Close();
-                    }
-                }
-            }
-            catch (WebException ex)
-            {
-                MessageBox.Show("Template\r\n" + ex.Message);
-            }
-        }
-        private void backgroundWorker1_RunWorkerCompleted_1(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (policyTemplatesFetch != null)
-            {
-                try
-                {
-                    if (policyTemplatesFetch.Contains("\"product\": \"policy"))
-                    {
-                        string[] splittext = policyTemplatesFetch.Substring(policyTemplatesFetch.IndexOf("\"product\": \"policy")).Replace("\"product\": \"policy", "|\"product\": \"policy").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("\"releaseid", "|\"releaseid").Split(new char[] { '|' });
-                        for (int i = 0; i < splittext.GetLength(0); i++)
-                        {
-                            if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"zip\","))
-                            {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
-                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
-                                if (policyVMenu != productVShort)
-                                {
-                                    SubPVMenu = new ToolStripMenuItem(productVShort);
-                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
-                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
-                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb.ToolTipText = productURL;
-                                    tb.Click += new EventHandler((object sender1, EventArgs e1) => Download_Click(sender1, e1, productVersion, productURL));
-
-                                }
-                                else if (policyVMenu == productVShort)
-                                {
-                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb2.ToolTipText = productURL;
-                                    tb2.Click += new EventHandler((object sender2, EventArgs e2) => Download2_Click(sender2, e2, productVersion, productURL));
-                                }
-                                policyVMenu = productVShort;
-
-                            }
-                            else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\": \"cab\","))
-                            {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\": \"")).Split(new char[] { '"' }, 4)[2];
-                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
-                                if (policyVMenu != productVShort)
-                                {
-                                    SubPVMenu = new ToolStripMenuItem(productVShort);
-                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
-                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
-                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb.ToolTipText = productURL;
-                                    tb.Click += new EventHandler((object sender3, EventArgs e3) => Download_Click1(sender3, e3, productVersion, productURL));
-
-                                }
-                                else if (policyVMenu == productVShort)
-                                {
-                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb2.ToolTipText = productURL;
-                                    tb2.Click += new EventHandler((object sender4, EventArgs e4) => Download2_Click1(sender4, e4, productVersion, productURL));
-                                }
-                                policyVMenu = productVShort;
-                            }
-                        }
-
-                    }
-                    else if (policyTemplatesFetch.Contains("\"product\":\"policy"))
-                    {
-                        string[] splittext = policyTemplatesFetch.Substring(policyTemplatesFetch.IndexOf("\"product\":\"policy")).Replace("\"product\":\"policy", "|\"product\":\"policy").ToString().Split(new char[] { '|', '>' }, 3)[1].Replace("\"releaseid", "|\"releaseid").Split(new char[] { '|' });
-                        for (int i = 0; i < splittext.GetLength(0); i++)
-                        {
-                            if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"zip\","))
-                            {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
-                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
-                                if (policyVMenu != productVShort)
-                                {
-                                    SubPVMenu = new ToolStripMenuItem(productVShort);
-                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
-                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
-                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb.ToolTipText = productURL;
-                                    tb.Click += new EventHandler((object sender5, EventArgs e5) => Download_Click2(sender5, e5, productVersion, productURL));
-
-                                }
-                                else if (policyVMenu == productVShort)
-                                {
-                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb2.ToolTipText = productURL;
-                                    tb2.Click += new EventHandler((object sender6, EventArgs e6) => Download2_Click2(sender6, e6, productVersion, productURL));
-                                }
-                                policyVMenu = productVShort;
-
-                            }
-                            else if (splittext[i].Contains("productversion") & splittext[i].Contains("artifactname\":\"cab\","))
-                            {
-                                string productVersion = splittext[i].Substring(splittext[i].IndexOf("productversion\":\"")).Split(new char[] { '"' }, 4)[2];
-                                string productVShort = productVersion.Split(new char[] { '.' }, 2)[0];
-                                string productURL = splittext[i].Substring(splittext[i].IndexOf("\"location\":")).Split(new char[] { '"' }, 5)[3];
-                                if (policyVMenu != productVShort)
-                                {
-                                    SubPVMenu = new ToolStripMenuItem(productVShort);
-                                    SubPVMenu.Font = new Font("Segoe UI", 9F);
-                                    policyTemplatesDownloadToolStripMenuItem.DropDownItems.Add(SubPVMenu);
-                                    var tb = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb.ToolTipText = productURL;
-                                    tb.Click += new EventHandler((object sender7, EventArgs e7) => Download_Click3(sender7, e7, productVersion, productURL));
-
-                                }
-                                else if (policyVMenu == productVShort)
-                                {
-                                    var tb2 = SubPVMenu.DropDownItems.Add(productVersion);
-                                    tb2.ToolTipText = productURL;
-                                    tb2.Click += new EventHandler((object sender8, EventArgs e8) => Download2_Click3(sender8, e8, productVersion, productURL));
-                                }
-                                policyVMenu = productVShort;
-                            }
-                        }
-                    }
-                    policyTemplatesDownloadToolStripMenuItem.Text = Langfile.Texts("Policy");
-                    policyTemplatesDownloadToolStripMenuItem.Enabled = true;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-        }
-        private void ObjectTexts()
-        {
-            label10.Text = Langfile.Texts("Label10");
-            button9.Text = Langfile.Texts("Button9");
-            button10.Text = Langfile.Texts("Button10");
-            checkBox1.Text = Langfile.Texts("checkBox1");
-            checkBox4.Text = Langfile.Texts("checkBox4");
-            checkBox5.Text = Langfile.Texts("checkBox5");
-            edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium" + Langfile.Texts("Edge");
-            edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Stable x86" + Langfile.Texts("Edge");
-            edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Stable x64" + Langfile.Texts("Edge");
-            edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Beta x86" + Langfile.Texts("Edge");
-            edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Beta x64" + Langfile.Texts("Edge");
-            edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Developer x86" + Langfile.Texts("Edge");
-            edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Developer x64" + Langfile.Texts("Edge");
-            edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Canary x86" + Langfile.Texts("Edge");
-            edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Canary x64" + Langfile.Texts("Edge");
-            enfernenToolStripMenuItem.Text = Langfile.Texts("Remove");
-            entfernenToolStripMenuItem.Text = Langfile.Texts("Remove");
-            entfernenToolStripMenuItem1.Text = Langfile.Texts("Remove");
-            enfernenToolStripMenuItem1.Text = Langfile.Texts("Remove");
-            enfernenToolStripMenuItem2.Text = Langfile.Texts("Remove");
-            enfernenToolStripMenuItem3.Text = Langfile.Texts("Remove");
-            enfernenToolStripMenuItem4.Text = Langfile.Texts("Remove");
-            enfernenToolStripMenuItem5.Text = Langfile.Texts("Remove");
-            enfernenToolStripMenuItem6.Text = Langfile.Texts("Remove");
-            regisrierenToolStripMenuItem.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem1.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem2.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem3.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem4.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem5.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem6.Text = Langfile.Texts("Register");
-            registrierenToolStripMenuItem7.Text = Langfile.Texts("Register");
-            extrasToolStripMenuItem.Text = Langfile.Texts("Extra");
-            versionsInfoToolStripMenuItem.Text = Langfile.Texts("VInfo");
-            policyTemplatesDownloadToolStripMenuItem.Text = Langfile.Texts("Policy2");
-        }
     }
     public static class GetEdgeVersion
     {
@@ -1601,29 +1515,6 @@ namespace Edge_Updater
                 return "No Response";
             }
             
-        }
-    }
-    public static class GetNewUpdaterVersion
-    {
-        public static string NewUpdaterVersion()
-        {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            try
-            {
-                var request = (WebRequest)HttpWebRequest.Create("https://github.com/UndertakerBen/PorEdgeUpd/raw/master/Version.txt");
-                var response = request.GetResponse();
-                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
-                {
-                    var version = reader.ReadToEnd();
-                    reader.Close();
-                    response.Close();
-                    return version;
-                }
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
     }
 }
