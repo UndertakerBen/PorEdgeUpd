@@ -42,7 +42,7 @@ namespace Edge_Updater
             buildversion[7] = GetEdgeVersion.EdgeVersion("Stable", "X64");
 
             InitializeComponent();
-            /*try
+            try
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 HttpWebRequest request2 = (HttpWebRequest)WebRequest.Create("https://www.microsoft.com/en-us/edge/business/download");
@@ -204,7 +204,7 @@ namespace Edge_Updater
             catch (WebException ex)
             {
                 MessageBox.Show("Template\r\n" + ex.Message);
-            }*/
+            }
             label2.Text = buildversion[0];
             label4.Text = buildversion[1];
             label6.Text = buildversion[2];
