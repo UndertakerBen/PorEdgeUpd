@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 
 namespace Edge_Updater
@@ -11,7 +11,8 @@ namespace Edge_Updater
         [STAThread]
         static void Main()
         {
-            //Console.WriteLine(GlobalVar.GlobalString);
+            PortableEdge.UiLanguage.UseEnglish();
+            System.IO.Directory.SetCurrentDirectory(Application.StartupPath);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Edge_Updater.Form1());

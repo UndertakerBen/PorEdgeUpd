@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -159,7 +159,7 @@
     <value>3</value>
   </data>
   <data name="radioButton1.Text" xml:space="preserve">
-    <value>Ein Profil für alle Versionen verwenden</value>
+    <value>Use one profile for all versions</value>
   </data>
   <data name="&gt;&gt;radioButton1.Name" xml:space="preserve">
     <value>radioButton1</value>
@@ -186,7 +186,7 @@
     <value>4</value>
   </data>
   <data name="radioButton2.Text" xml:space="preserve">
-    <value>Für jede Version ein eigenes Profil verwenden</value>
+    <value>Use a separate profile for each version</value>
   </data>
   <data name="&gt;&gt;radioButton2.Name" xml:space="preserve">
     <value>radioButton2</value>
@@ -213,7 +213,7 @@
     <value>5</value>
   </data>
   <data name="radioButton3.Text" xml:space="preserve">
-    <value>Das Standard Profil von MS Edge (Chromium) verwenden</value>
+    <value>Use the standard Edge profile</value>
   </data>
   <data name="&gt;&gt;radioButton3.Name" xml:space="preserve">
     <value>radioButton3</value>

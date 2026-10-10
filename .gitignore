@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+artifacts/
+.vs/
+*.user
+/Launcher/Launcher.7z
+/Bin/
+/Edge/
+/Edge * x86/
+/Edge * x64/
+/profile/
+/Update/
+/ADMX Policy Templates/

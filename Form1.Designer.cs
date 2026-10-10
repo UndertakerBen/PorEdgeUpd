@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Edge_Updater
 {
@@ -88,7 +88,6 @@ namespace Edge_Updater
             this.enfernenToolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.policyTemplatesDownloadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.versionsInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
@@ -274,7 +273,7 @@ namespace Edge_Updater
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(161, 13);
             this.label10.TabIndex = 18;
-            this.label10.Text = "Alle x86 und oder x64 installieren";
+            this.label10.Text = "Install all x86 and/or x64 versions";
             // 
             // checkBox2
             // 
@@ -305,7 +304,7 @@ namespace Edge_Updater
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(106, 25);
             this.button9.TabIndex = 22;
-            this.button9.Text = "Alle Installieren";
+            this.button9.Text = "Install all";
             this.button9.UseVisualStyleBackColor = false;
             this.button9.EnabledChanged += new System.EventHandler(this.Button9_EnabledChanged);
             this.button9.Click += new System.EventHandler(this.Button9_Click);
@@ -328,7 +327,7 @@ namespace Edge_Updater
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(207, 17);
             this.checkBox1.TabIndex = 49;
-            this.checkBox1.Text = "Für jede Version einen eigenen Ordner";
+            this.checkBox1.Text = "Use a separate folder for each version";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
             // 
@@ -339,7 +338,7 @@ namespace Edge_Updater
             this.checkBox4.Name = "checkBox4";
             this.checkBox4.Size = new System.Drawing.Size(150, 17);
             this.checkBox4.TabIndex = 51;
-            this.checkBox4.Text = "Versionkontrolle ignorieren";
+            this.checkBox4.Text = "Ignore version check";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
             // button10
@@ -348,7 +347,7 @@ namespace Edge_Updater
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(75, 25);
             this.button10.TabIndex = 52;
-            this.button10.Text = "Beenden";
+            this.button10.Text = "Quit";
             this.button10.UseVisualStyleBackColor = true;
             this.button10.Click += new System.EventHandler(this.Button10_Click);
             // 
@@ -386,7 +385,7 @@ namespace Edge_Updater
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(237, 17);
             this.checkBox5.TabIndex = 49;
-            this.checkBox5.Text = "Eine Verknüpfung auf dem Desktop erstellen";
+            this.checkBox5.Text = "Create a desktop shortcut";
             this.checkBox5.UseVisualStyleBackColor = true;
             // 
             // menuStrip1
@@ -419,7 +418,7 @@ namespace Edge_Updater
             this.extrasToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.extrasToolStripMenuItem.Name = "extrasToolStripMenuItem";
             this.extrasToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.extrasToolStripMenuItem.Text = "Extras";
+            this.extrasToolStripMenuItem.Text = "Tools";
             this.extrasToolStripMenuItem.Click += new System.EventHandler(this.ExtrasToolStripMenuItem_Click);
             // 
             // edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem
@@ -430,20 +429,20 @@ namespace Edge_Updater
             this.edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium als Standardbrowser";
+            this.edgeChromiumAlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium as default browser";
             // 
             // registrierenToolStripMenuItem
             // 
             this.registrierenToolStripMenuItem.Name = "registrierenToolStripMenuItem";
             this.registrierenToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem.Text = "Registrieren";
+            this.registrierenToolStripMenuItem.Text = "Register";
             this.registrierenToolStripMenuItem.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem_Click);
             // 
             // entfernenToolStripMenuItem
             // 
             this.entfernenToolStripMenuItem.Name = "entfernenToolStripMenuItem";
             this.entfernenToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.entfernenToolStripMenuItem.Text = "Entfernen";
+            this.entfernenToolStripMenuItem.Text = "Remove";
             this.entfernenToolStripMenuItem.Click += new System.EventHandler(this.EntfernenToolStripMenuItem_Click);
             // 
             // edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -454,20 +453,20 @@ namespace Edge_Updater
             this.edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Stable x86 als Standardbrowser";
+            this.edgeChromiumStableX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Stable x86 as default browser";
             // 
             // registrierenToolStripMenuItem1
             // 
             this.registrierenToolStripMenuItem1.Name = "registrierenToolStripMenuItem1";
             this.registrierenToolStripMenuItem1.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem1.Text = "Registrieren";
+            this.registrierenToolStripMenuItem1.Text = "Register";
             this.registrierenToolStripMenuItem1.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem1_Click);
             // 
             // enfernenToolStripMenuItem
             // 
             this.enfernenToolStripMenuItem.Name = "enfernenToolStripMenuItem";
             this.enfernenToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.enfernenToolStripMenuItem.Text = "Entfernen";
+            this.enfernenToolStripMenuItem.Text = "Remove";
             this.enfernenToolStripMenuItem.Click += new System.EventHandler(this.EnfernenToolStripMenuItem_Click);
             // 
             // edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -478,20 +477,20 @@ namespace Edge_Updater
             this.edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Stable x64 als Standardbrowser";
+            this.edgeChromiumStableX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Stable x64 as default browser";
             // 
             // registrierenToolStripMenuItem2
             // 
             this.registrierenToolStripMenuItem2.Name = "registrierenToolStripMenuItem2";
             this.registrierenToolStripMenuItem2.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem2.Text = "Registrieren";
+            this.registrierenToolStripMenuItem2.Text = "Register";
             this.registrierenToolStripMenuItem2.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem2_Click);
             // 
             // entfernenToolStripMenuItem1
             // 
             this.entfernenToolStripMenuItem1.Name = "entfernenToolStripMenuItem1";
             this.entfernenToolStripMenuItem1.Size = new System.Drawing.Size(136, 22);
-            this.entfernenToolStripMenuItem1.Text = "Entfernen";
+            this.entfernenToolStripMenuItem1.Text = "Remove";
             this.entfernenToolStripMenuItem1.Click += new System.EventHandler(this.EntfernenToolStripMenuItem1_Click);
             // 
             // edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -502,20 +501,20 @@ namespace Edge_Updater
             this.edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Beta x86 als Standardbrowser";
+            this.edgeChromiumBetaX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Beta x86 as default browser";
             // 
             // registrierenToolStripMenuItem3
             // 
             this.registrierenToolStripMenuItem3.Name = "registrierenToolStripMenuItem3";
             this.registrierenToolStripMenuItem3.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem3.Text = "Registrieren";
+            this.registrierenToolStripMenuItem3.Text = "Register";
             this.registrierenToolStripMenuItem3.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem3_Click);
             // 
             // enfernenToolStripMenuItem1
             // 
             this.enfernenToolStripMenuItem1.Name = "enfernenToolStripMenuItem1";
             this.enfernenToolStripMenuItem1.Size = new System.Drawing.Size(136, 22);
-            this.enfernenToolStripMenuItem1.Text = "Entfernen";
+            this.enfernenToolStripMenuItem1.Text = "Remove";
             this.enfernenToolStripMenuItem1.Click += new System.EventHandler(this.EnfernenToolStripMenuItem1_Click);
             // 
             // edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -526,20 +525,20 @@ namespace Edge_Updater
             this.edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Beta x64 als Standardbrowser";
+            this.edgeChromiumBetaX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Beta x64 as default browser";
             // 
             // registrierenToolStripMenuItem4
             // 
             this.registrierenToolStripMenuItem4.Name = "registrierenToolStripMenuItem4";
             this.registrierenToolStripMenuItem4.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem4.Text = "Registrieren";
+            this.registrierenToolStripMenuItem4.Text = "Register";
             this.registrierenToolStripMenuItem4.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem4_Click);
             // 
             // enfernenToolStripMenuItem2
             // 
             this.enfernenToolStripMenuItem2.Name = "enfernenToolStripMenuItem2";
             this.enfernenToolStripMenuItem2.Size = new System.Drawing.Size(136, 22);
-            this.enfernenToolStripMenuItem2.Text = "Entfernen";
+            this.enfernenToolStripMenuItem2.Text = "Remove";
             this.enfernenToolStripMenuItem2.Click += new System.EventHandler(this.EnfernenToolStripMenuItem2_Click);
             // 
             // edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -550,20 +549,20 @@ namespace Edge_Updater
             this.edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Developer x86 als Standardbrowser";
+            this.edgeChromiumDeveloperX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Developer x86 as default browser";
             // 
             // regisrierenToolStripMenuItem
             // 
             this.regisrierenToolStripMenuItem.Name = "regisrierenToolStripMenuItem";
             this.regisrierenToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
-            this.regisrierenToolStripMenuItem.Text = "Registrieren";
+            this.regisrierenToolStripMenuItem.Text = "Register";
             this.regisrierenToolStripMenuItem.Click += new System.EventHandler(this.RegisrierenToolStripMenuItem_Click);
             // 
             // enfernenToolStripMenuItem3
             // 
             this.enfernenToolStripMenuItem3.Name = "enfernenToolStripMenuItem3";
             this.enfernenToolStripMenuItem3.Size = new System.Drawing.Size(136, 22);
-            this.enfernenToolStripMenuItem3.Text = "Entfernen";
+            this.enfernenToolStripMenuItem3.Text = "Remove";
             this.enfernenToolStripMenuItem3.Click += new System.EventHandler(this.EnfernenToolStripMenuItem3_Click);
             // 
             // edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -574,20 +573,20 @@ namespace Edge_Updater
             this.edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Developer x64 als Standardbrowser";
+            this.edgeChromiumDeveloperX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Developer x64 as default browser";
             // 
             // registrierenToolStripMenuItem5
             // 
             this.registrierenToolStripMenuItem5.Name = "registrierenToolStripMenuItem5";
             this.registrierenToolStripMenuItem5.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem5.Text = "Registrieren";
+            this.registrierenToolStripMenuItem5.Text = "Register";
             this.registrierenToolStripMenuItem5.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem5_Click);
             // 
             // enfernenToolStripMenuItem4
             // 
             this.enfernenToolStripMenuItem4.Name = "enfernenToolStripMenuItem4";
             this.enfernenToolStripMenuItem4.Size = new System.Drawing.Size(136, 22);
-            this.enfernenToolStripMenuItem4.Text = "Entfernen";
+            this.enfernenToolStripMenuItem4.Text = "Remove";
             this.enfernenToolStripMenuItem4.Click += new System.EventHandler(this.EnfernenToolStripMenuItem4_Click);
             // 
             // edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -598,20 +597,20 @@ namespace Edge_Updater
             this.edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Canary x86 als Standardbrowser";
+            this.edgeChromiumCanaryX86AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Canary x86 as default browser";
             // 
             // registrierenToolStripMenuItem6
             // 
             this.registrierenToolStripMenuItem6.Name = "registrierenToolStripMenuItem6";
             this.registrierenToolStripMenuItem6.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem6.Text = "Registrieren";
+            this.registrierenToolStripMenuItem6.Text = "Register";
             this.registrierenToolStripMenuItem6.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem6_Click);
             // 
             // enfernenToolStripMenuItem5
             // 
             this.enfernenToolStripMenuItem5.Name = "enfernenToolStripMenuItem5";
             this.enfernenToolStripMenuItem5.Size = new System.Drawing.Size(136, 22);
-            this.enfernenToolStripMenuItem5.Text = "Entfernen";
+            this.enfernenToolStripMenuItem5.Text = "Remove";
             this.enfernenToolStripMenuItem5.Click += new System.EventHandler(this.EnfernenToolStripMenuItem5_Click);
             // 
             // edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem
@@ -622,20 +621,20 @@ namespace Edge_Updater
             this.edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Name = "edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem";
             this.edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Size = new System.Drawing.Size(347, 22);
-            this.edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Canary x64 als Standardbrowser";
+            this.edgeChromiumCanaryX64AlsStandardBrowserRegistrierenToolStripMenuItem.Text = "Edge Chromium Canary x64 as default browser";
             // 
             // registrierenToolStripMenuItem7
             // 
             this.registrierenToolStripMenuItem7.Name = "registrierenToolStripMenuItem7";
             this.registrierenToolStripMenuItem7.Size = new System.Drawing.Size(136, 22);
-            this.registrierenToolStripMenuItem7.Text = "Registrieren";
+            this.registrierenToolStripMenuItem7.Text = "Register";
             this.registrierenToolStripMenuItem7.Click += new System.EventHandler(this.RegistrierenToolStripMenuItem7_Click);
             // 
             // enfernenToolStripMenuItem6
             // 
             this.enfernenToolStripMenuItem6.Name = "enfernenToolStripMenuItem6";
             this.enfernenToolStripMenuItem6.Size = new System.Drawing.Size(136, 22);
-            this.enfernenToolStripMenuItem6.Text = "Entfernen";
+            this.enfernenToolStripMenuItem6.Text = "Remove";
             this.enfernenToolStripMenuItem6.Click += new System.EventHandler(this.EnfernenToolStripMenuItem6_Click);
             // 
             // policyTemplatesDownloadToolStripMenuItem
@@ -645,7 +644,7 @@ namespace Edge_Updater
             this.policyTemplatesDownloadToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.policyTemplatesDownloadToolStripMenuItem.Name = "policyTemplatesDownloadToolStripMenuItem";
             this.policyTemplatesDownloadToolStripMenuItem.Size = new System.Drawing.Size(210, 20);
-            this.policyTemplatesDownloadToolStripMenuItem.Text = "Richtlinienvorlagen herunterladen";
+            this.policyTemplatesDownloadToolStripMenuItem.Text = "Download policy templates";
             // 
             // versionsInfoToolStripMenuItem
             // 
@@ -653,13 +652,11 @@ namespace Edge_Updater
             this.versionsInfoToolStripMenuItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.versionsInfoToolStripMenuItem.Name = "versionsInfoToolStripMenuItem";
             this.versionsInfoToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
-            this.versionsInfoToolStripMenuItem.Text = "Versions Info";
+            this.versionsInfoToolStripMenuItem.Text = "Version info";
             this.versionsInfoToolStripMenuItem.Click += new System.EventHandler(this.VersionsInfoToolStripMenuItem_Click);
             // 
             // backgroundWorker1
             // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted_1);
             // 
             // Form1
             // 
@@ -750,7 +747,5 @@ namespace Edge_Updater
         private System.Windows.Forms.ToolStripMenuItem registrierenToolStripMenuItem7;
         private System.Windows.Forms.ToolStripMenuItem enfernenToolStripMenuItem6;
 		private System.Windows.Forms.ToolStripMenuItem policyTemplatesDownloadToolStripMenuItem;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
-

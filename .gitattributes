@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Keep upstream license files byte-for-byte, including trailing blank lines.
+licenses/* -text whitespace=cr-at-eol,-blank-at-eof
